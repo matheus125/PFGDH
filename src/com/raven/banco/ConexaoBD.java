@@ -17,7 +17,7 @@ public class ConexaoBD {
     /**
      * Variavel para login com banco
      */
-    private final String url = "jdbc:mysql://localhost/viver_melhor";
+    private final String url = "jdbc:mysql://localhost/dev05";
     private final String user = "root";
     private final String pass = "#Wiccan13#";
     private final String driver = "com.mysql.cj.jdbc.Driver";
