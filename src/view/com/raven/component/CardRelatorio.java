@@ -1,0 +1,184 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ */
+package view.com.raven.component;
+
+import com.raven.banco.ConexaoBD;
+import com.raven.tabelas.TabelaUniversal;
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.WorkbookDocument;
+import view.com.raven.swing.ScrollBar;
+import view.com.raven.swing.Table2;
+
+/**
+ *
+ * @author mathe
+ */
+public class CardRelatorio extends javax.swing.JPanel {
+
+    /**
+     * Creates new form CardRelatorio
+     */
+    ConexaoBD con = new ConexaoBD();
+
+    public CardRelatorio() {
+        initComponents();
+
+        tabela_cliente("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
+                + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.nis,c.status_Cliente, c.registration_date,\n"
+                + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
+                + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
+    }
+
+    //TABELA CARREGANDO DADOS DOS CLIENTES NA GUIA CLIENTE
+    public final void tabela_cliente(String Sql) {
+        spTableCliente.setVerticalScrollBar(new ScrollBar());
+        spTableCliente.getVerticalScrollBar().setBackground(Color.WHITE);
+        spTableCliente.getViewport().setBackground(Color.WHITE);
+
+        JPanel p = new JPanel();
+        p.setBackground(Color.WHITE);
+        spTableCliente.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
+
+        ArrayList dados = new ArrayList();
+        String[] colunas = new String[]{"ID", "Nome", "RG", "CPF", "NIS", "IDADE", "SEXO", "STATUS", "DATA CADASTRO"};
+
+        con.getConectar();
+        con.executarSql(Sql);
+        //Inserir dados na tabela
+        try {
+            con.getResultSet().first();
+            do {
+                dados.add(new Object[]{con.getResultSet().getInt("c.id"),
+                    con.getResultSet().getString("c.nome_Completo"),
+                    con.getResultSet().getString("c.rg"),
+                    con.getResultSet().getString("c.cpf"),
+                    con.getResultSet().getString("c.nis"),
+                    con.getResultSet().getString("c.idade_cliente"),
+                    con.getResultSet().getString("c.genero_cliente"),
+                    con.getResultSet().getString("c.status_Cliente"),
+                    con.getResultSet().getString("c.registration_date")
+                });
+            } while (con.getResultSet().next());
+        } catch (SQLException e) {
+
+        }
+
+        TabelaUniversal tabela = new TabelaUniversal(dados, colunas);
+
+        table_cliente.setModel(tabela);
+
+        table_cliente.getColumnModel().getColumn(0).setPreferredWidth(30);
+        table_cliente.getColumnModel().getColumn(0).setResizable(false);
+        table_cliente.getColumnModel().getColumn(1).setPreferredWidth(190);
+        table_cliente.getColumnModel().getColumn(1).setResizable(false);
+        table_cliente.getColumnModel().getColumn(2).setPreferredWidth(120);
+        table_cliente.getColumnModel().getColumn(2).setResizable(false);
+        table_cliente.getColumnModel().getColumn(3).setPreferredWidth(115);
+        table_cliente.getColumnModel().getColumn(3).setResizable(false);
+        table_cliente.getColumnModel().getColumn(4).setPreferredWidth(50);
+        table_cliente.getColumnModel().getColumn(4).setResizable(false);
+        table_cliente.getColumnModel().getColumn(5).setPreferredWidth(168);
+        table_cliente.getColumnModel().getColumn(5).setResizable(false);
+        table_cliente.getColumnModel().getColumn(6).setPreferredWidth(187);
+        table_cliente.getColumnModel().getColumn(6).setResizable(false);
+        table_cliente.getColumnModel().getColumn(7).setPreferredWidth(187);
+        table_cliente.getColumnModel().getColumn(7).setResizable(false);
+        table_cliente.getColumnModel().getColumn(8).setPreferredWidth(187);
+        table_cliente.getColumnModel().getColumn(8).setResizable(false);
+        table_cliente.getTableHeader().setReorderingAllowed(false);
+        table_cliente.setAutoResizeMode(Table2.AUTO_RESIZE_OFF);
+        table_cliente.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }//FIM.
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jButton1 = new javax.swing.JButton();
+        spTableCliente = new javax.swing.JScrollPane();
+        table_cliente = new javax.swing.JTable();
+
+        jButton1.setText("GERAR");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        table_cliente.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        spTableCliente.setViewportView(table_cliente);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(162, 162, 162)
+                        .addComponent(spTableCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(343, 343, 343)
+                        .addComponent(jButton1)))
+                .addContainerGap(209, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(spTableCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
+                .addComponent(jButton1)
+                .addContainerGap(87, Short.MAX_VALUE))
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    @Override
+    protected void paintChildren(Graphics grphcs) {
+        Graphics2D g2 = (Graphics2D) grphcs;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        GradientPaint g = new GradientPaint(0, 0, Color.decode("#1CB5E0"), 0, getHeight(), Color.decode("#000046"));
+        g2.setPaint(g);
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+        g2.fillRect(getWidth() - 20, 0, getWidth(), getHeight());
+        super.paintChildren(grphcs);
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JScrollPane spTableCliente;
+    private javax.swing.JTable table_cliente;
+    // End of variables declaration//GEN-END:variables
+}
