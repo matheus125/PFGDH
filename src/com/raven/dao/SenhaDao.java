@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 public class SenhaDao extends ConexaoBD {
     
     
-    String texto = "PRATO CHEIO VIVER MELHOR";
+    String texto = "PRATO CHEIO B.U";
 
     //SALVAR SENHAS TITULADAS AOS CLIENTES OU DEPENDENTES.
     public boolean daoSalvarSenha(Senha senha) {

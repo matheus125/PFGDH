@@ -1,128 +1,249 @@
 package com.raven.model;
 
 public class Relatorios {
-    
-     private int _0a16Masculino;
-    private int _0a16Feminino;
-    private int _16a60Masculino;
-    private int _16a60Feminino;
-    private int _60Masculino;
-    private int _60Feminino;
-    private int _deficientes;
+
+    private int _3_17_ANOS_MASCULINO;
+    private int _3_17_ANOS_MASCULINO_CPD;
+    private int _3_17_ANOS_FEMININO;
+    private int _3_17_ANOS_FEMININO_CPD;
+    private int _18_59_ANOS_MASCULINO;
+    private int _18_59_ANOS_MASCULINO_CPD;
+    private int _18_59_ANOS_FEMININO;
+    private int _18_59_ANOS_FEMININO_CPD;
+    private int _A_PARTIR_DE_60_ANOS_MASCULINO;
+    private int _A_PARTIR_DE_60_ANOS_MASCULINO_CPD;
+    private int _A_PARTIR_DE_60_ANOS_FEMININO;
+    private int _A_PARTIR_DE_60_ANOS_FEMININO_CPD;
+    private int _PESSOAS_SITUACAO_RUA_MASCULINO;
+    private int _PESSOAS_SITUACAO_RUA_FEMININO;
     private int _genericos;
+    private int _deficientes;
     private int _totalDePessoasAtendidas;
+    
 
     public Relatorios() {
     }
 
-    public Relatorios(int _0a16Masculino, int _0a16Feminino, int _16a60Masculino, int _16a60Feminino, int _60Masculino, int _60Feminino, int _deficientes, int _genericos, int _totalDePessoasAtendidas) {
-        this._0a16Masculino = _0a16Masculino;
-        this._0a16Feminino = _0a16Feminino;
-        this._16a60Masculino = _16a60Masculino;
-        this._16a60Feminino = _16a60Feminino;
-        this._60Masculino = _60Masculino;
-        this._60Feminino = _60Feminino;
-        this._deficientes = _deficientes;
+    public Relatorios(int _3_17_ANOS_MASCULINO, int _3_17_ANOS_MASCULINO_CPD, int _3_17_ANOS_FEMININO, int _3_17_ANOS_FEMININO_CPD, int _18_59_ANOS_MASCULINO, int _18_59_ANOS_MASCULINO_CPD, int _18_59_ANOS_FEMININO, int _18_59_ANOS_FEMININO_CPD, int _A_PARTIR_DE_60_ANOS_MASCULINO, int _A_PARTIR_DE_60_ANOS_MASCULINO_CPD, int _A_PARTIR_DE_60_ANOS_FEMININO, int _A_PARTIR_DE_60_ANOS_FEMININO_CPD, int _PESSOAS_SITUACAO_RUA_MASCULINO, int _PESSOAS_SITUACAO_RUA_FEMININO, int _genericos, int _deficientes, int _totalDePessoasAtendidas) {
+        this._3_17_ANOS_MASCULINO = _3_17_ANOS_MASCULINO;
+        this._3_17_ANOS_MASCULINO_CPD = _3_17_ANOS_MASCULINO_CPD;
+        this._3_17_ANOS_FEMININO = _3_17_ANOS_FEMININO;
+        this._3_17_ANOS_FEMININO_CPD = _3_17_ANOS_FEMININO_CPD;
+        this._18_59_ANOS_MASCULINO = _18_59_ANOS_MASCULINO;
+        this._18_59_ANOS_MASCULINO_CPD = _18_59_ANOS_MASCULINO_CPD;
+        this._18_59_ANOS_FEMININO = _18_59_ANOS_FEMININO;
+        this._18_59_ANOS_FEMININO_CPD = _18_59_ANOS_FEMININO_CPD;
+        this._A_PARTIR_DE_60_ANOS_MASCULINO = _A_PARTIR_DE_60_ANOS_MASCULINO;
+        this._A_PARTIR_DE_60_ANOS_MASCULINO_CPD = _A_PARTIR_DE_60_ANOS_MASCULINO_CPD;
+        this._A_PARTIR_DE_60_ANOS_FEMININO = _A_PARTIR_DE_60_ANOS_FEMININO;
+        this._A_PARTIR_DE_60_ANOS_FEMININO_CPD = _A_PARTIR_DE_60_ANOS_FEMININO_CPD;
+        this._PESSOAS_SITUACAO_RUA_MASCULINO = _PESSOAS_SITUACAO_RUA_MASCULINO;
+        this._PESSOAS_SITUACAO_RUA_FEMININO = _PESSOAS_SITUACAO_RUA_FEMININO;
         this._genericos = _genericos;
+        this._deficientes = _deficientes;
         this._totalDePessoasAtendidas = _totalDePessoasAtendidas;
     }
 
     /**
-     * @return the _0a16Masculino
+     * @return the _3_17_ANOS_MASCULINO
      */
-    public int get0a16Masculino() {
-        return _0a16Masculino;
+    public int get3_17_ANOS_MASCULINO() {
+        return _3_17_ANOS_MASCULINO;
     }
 
     /**
-     * @param _0a16Masculino the _0a16Masculino to set
+     * @param _3_17_ANOS_MASCULINO the _3_17_ANOS_MASCULINO to set
      */
-    public void set0a16Masculino(int _0a16Masculino) {
-        this._0a16Masculino = _0a16Masculino;
+    public void set3_17_ANOS_MASCULINO(int _3_17_ANOS_MASCULINO) {
+        this._3_17_ANOS_MASCULINO = _3_17_ANOS_MASCULINO;
     }
 
     /**
-     * @return the _0a16Feminino
+     * @return the _3_17_ANOS_MASCULINO_CPD
      */
-    public int get0a16Feminino() {
-        return _0a16Feminino;
+    public int get3_17_ANOS_MASCULINO_CPD() {
+        return _3_17_ANOS_MASCULINO_CPD;
     }
 
     /**
-     * @param _0a16Feminino the _0a16Feminino to set
+     * @param _3_17_ANOS_MASCULINO_CPD the _3_17_ANOS_MASCULINO_CPD to set
      */
-    public void set0a16Feminino(int _0a16Feminino) {
-        this._0a16Feminino = _0a16Feminino;
+    public void set3_17_ANOS_MASCULINO_CPD(int _3_17_ANOS_MASCULINO_CPD) {
+        this._3_17_ANOS_MASCULINO_CPD = _3_17_ANOS_MASCULINO_CPD;
     }
 
     /**
-     * @return the _16a60Masculino
+     * @return the _3_17_ANOS_FEMININO
      */
-    public int get16a60Masculino() {
-        return _16a60Masculino;
+    public int get3_17_ANOS_FEMININO() {
+        return _3_17_ANOS_FEMININO;
     }
 
     /**
-     * @param _16a60Masculino the _16a60Masculino to set
+     * @param _3_17_ANOS_FEMININO the _3_17_ANOS_FEMININO to set
      */
-    public void set16a60Masculino(int _16a60Masculino) {
-        this._16a60Masculino = _16a60Masculino;
+    public void set3_17_ANOS_FEMININO(int _3_17_ANOS_FEMININO) {
+        this._3_17_ANOS_FEMININO = _3_17_ANOS_FEMININO;
     }
 
     /**
-     * @return the _16a60Feminino
+     * @return the _3_17_ANOS_FEMININO_CPD
      */
-    public int get16a60Feminino() {
-        return _16a60Feminino;
+    public int get3_17_ANOS_FEMININO_CPD() {
+        return _3_17_ANOS_FEMININO_CPD;
     }
 
     /**
-     * @param _16a60Feminino the _16a60Feminino to set
+     * @param _3_17_ANOS_FEMININO_CPD the _3_17_ANOS_FEMININO_CPD to set
      */
-    public void set16a60Feminino(int _16a60Feminino) {
-        this._16a60Feminino = _16a60Feminino;
+    public void set3_17_ANOS_FEMININO_CPD(int _3_17_ANOS_FEMININO_CPD) {
+        this._3_17_ANOS_FEMININO_CPD = _3_17_ANOS_FEMININO_CPD;
     }
 
     /**
-     * @return the _60Masculino
+     * @return the _18_59_ANOS_MASCULINO
      */
-    public int get60Masculino() {
-        return _60Masculino;
+    public int get18_59_ANOS_MASCULINO() {
+        return _18_59_ANOS_MASCULINO;
     }
 
     /**
-     * @param _60Masculino the _60Masculino to set
+     * @param _18_59_ANOS_MASCULINO the _18_59_ANOS_MASCULINO to set
      */
-    public void set60Masculino(int _60Masculino) {
-        this._60Masculino = _60Masculino;
+    public void set18_59_ANOS_MASCULINO(int _18_59_ANOS_MASCULINO) {
+        this._18_59_ANOS_MASCULINO = _18_59_ANOS_MASCULINO;
     }
 
     /**
-     * @return the _60Feminino
+     * @return the _18_59_ANOS_MASCULINO_CPD
      */
-    public int get60Feminino() {
-        return _60Feminino;
+    public int get18_59_ANOS_MASCULINO_CPD() {
+        return _18_59_ANOS_MASCULINO_CPD;
     }
 
     /**
-     * @param _60Feminino the _60Feminino to set
+     * @param _18_59_ANOS_MASCULINO_CPD the _18_59_ANOS_MASCULINO_CPD to set
      */
-    public void set60Feminino(int _60Feminino) {
-        this._60Feminino = _60Feminino;
+    public void set18_59_ANOS_MASCULINO_CPD(int _18_59_ANOS_MASCULINO_CPD) {
+        this._18_59_ANOS_MASCULINO_CPD = _18_59_ANOS_MASCULINO_CPD;
     }
 
     /**
-     * @return the _deficientes
+     * @return the _18_59_ANOS_FEMININO
      */
-    public int getDeficientes() {
-        return _deficientes;
+    public int get18_59_ANOS_FEMININO() {
+        return _18_59_ANOS_FEMININO;
     }
 
     /**
-     * @param _deficientes the _deficientes to set
+     * @param _18_59_ANOS_FEMININO the _18_59_ANOS_FEMININO to set
      */
-    public void setDeficientes(int _deficientes) {
-        this._deficientes = _deficientes;
+    public void set18_59_ANOS_FEMININO(int _18_59_ANOS_FEMININO) {
+        this._18_59_ANOS_FEMININO = _18_59_ANOS_FEMININO;
+    }
+
+    /**
+     * @return the _18_59_ANOS_FEMININO_CPD
+     */
+    public int get18_59_ANOS_FEMININO_CPD() {
+        return _18_59_ANOS_FEMININO_CPD;
+    }
+
+    /**
+     * @param _18_59_ANOS_FEMININO_CPD the _18_59_ANOS_FEMININO_CPD to set
+     */
+    public void set18_59_ANOS_FEMININO_CPD(int _18_59_ANOS_FEMININO_CPD) {
+        this._18_59_ANOS_FEMININO_CPD = _18_59_ANOS_FEMININO_CPD;
+    }
+
+    /**
+     * @return the _A_PARTIR_DE_60_ANOS_MASCULINO
+     */
+    public int getA_PARTIR_DE_60_ANOS_MASCULINO() {
+        return _A_PARTIR_DE_60_ANOS_MASCULINO;
+    }
+
+    /**
+     * @param _A_PARTIR_DE_60_ANOS_MASCULINO the _A_PARTIR_DE_60_ANOS_MASCULINO
+     * to set
+     */
+    public void setA_PARTIR_DE_60_ANOS_MASCULINO(int _A_PARTIR_DE_60_ANOS_MASCULINO) {
+        this._A_PARTIR_DE_60_ANOS_MASCULINO = _A_PARTIR_DE_60_ANOS_MASCULINO;
+    }
+
+    /**
+     * @return the _A_PARTIR_DE_60_ANOS_MASCULINO_CPD
+     */
+    public int getA_PARTIR_DE_60_ANOS_MASCULINO_CPD() {
+        return _A_PARTIR_DE_60_ANOS_MASCULINO_CPD;
+    }
+
+    /**
+     * @param _A_PARTIR_DE_60_ANOS_MASCULINO_CPD the
+     * _A_PARTIR_DE_60_ANOS_MASCULINO_CPD to set
+     */
+    public void setA_PARTIR_DE_60_ANOS_MASCULINO_CPD(int _A_PARTIR_DE_60_ANOS_MASCULINO_CPD) {
+        this._A_PARTIR_DE_60_ANOS_MASCULINO_CPD = _A_PARTIR_DE_60_ANOS_MASCULINO_CPD;
+    }
+
+    /**
+     * @return the _A_PARTIR_DE_60_ANOS_FEMININO
+     */
+    public int getA_PARTIR_DE_60_ANOS_FEMININO() {
+        return _A_PARTIR_DE_60_ANOS_FEMININO;
+    }
+
+    /**
+     * @param _A_PARTIR_DE_60_ANOS_FEMININO the _A_PARTIR_DE_60_ANOS_FEMININO to
+     * set
+     */
+    public void setA_PARTIR_DE_60_ANOS_FEMININO(int _A_PARTIR_DE_60_ANOS_FEMININO) {
+        this._A_PARTIR_DE_60_ANOS_FEMININO = _A_PARTIR_DE_60_ANOS_FEMININO;
+    }
+
+    /**
+     * @return the _A_PARTIR_DE_60_ANOS_FEMININO_CPD
+     */
+    public int getA_PARTIR_DE_60_ANOS_FEMININO_CPD() {
+        return _A_PARTIR_DE_60_ANOS_FEMININO_CPD;
+    }
+
+    /**
+     * @param _A_PARTIR_DE_60_ANOS_FEMININO_CPD the
+     * _A_PARTIR_DE_60_ANOS_FEMININO_CPD to set
+     */
+    public void setA_PARTIR_DE_60_ANOS_FEMININO_CPD(int _A_PARTIR_DE_60_ANOS_FEMININO_CPD) {
+        this._A_PARTIR_DE_60_ANOS_FEMININO_CPD = _A_PARTIR_DE_60_ANOS_FEMININO_CPD;
+    }
+
+    /**
+     * @return the _PESSOAS_SITUACAO_RUA_MASCULINO
+     */
+    public int getPESSOAS_SITUACAO_RUA_MASCULINO() {
+        return _PESSOAS_SITUACAO_RUA_MASCULINO;
+    }
+
+    /**
+     * @param _PESSOAS_SITUACAO_RUA_MASCULINO the
+     * _PESSOAS_SITUACAO_RUA_MASCULINO to set
+     */
+    public void setPESSOAS_SITUACAO_RUA_MASCULINO(int _PESSOAS_SITUACAO_RUA_MASCULINO) {
+        this._PESSOAS_SITUACAO_RUA_MASCULINO = _PESSOAS_SITUACAO_RUA_MASCULINO;
+    }
+
+    /**
+     * @return the _PESSOAS_SITUACAO_RUA_FEMININO
+     */
+    public int getPESSOAS_SITUACAO_RUA_FEMININO() {
+        return _PESSOAS_SITUACAO_RUA_FEMININO;
+    }
+
+    /**
+     * @param _PESSOAS_SITUACAO_RUA_FEMININO the _PESSOAS_SITUACAO_RUA_FEMININO
+     * to set
+     */
+    public void setPESSOAS_SITUACAO_RUA_FEMININO(int _PESSOAS_SITUACAO_RUA_FEMININO) {
+        this._PESSOAS_SITUACAO_RUA_FEMININO = _PESSOAS_SITUACAO_RUA_FEMININO;
     }
 
     /**
@@ -140,6 +261,20 @@ public class Relatorios {
     }
 
     /**
+     * @return the _deficientes
+     */
+    public int getDeficientes() {
+        return _deficientes;
+    }
+
+    /**
+     * @param _deficientes the _deficientes to set
+     */
+    public void setDeficientes(int _deficientes) {
+        this._deficientes = _deficientes;
+    }
+
+    /**
      * @return the _totalDePessoasAtendidas
      */
     public int getTotalDePessoasAtendidas() {
@@ -153,8 +288,4 @@ public class Relatorios {
         this._totalDePessoasAtendidas = _totalDePessoasAtendidas;
     }
 
-   
-
-    
-    
 }

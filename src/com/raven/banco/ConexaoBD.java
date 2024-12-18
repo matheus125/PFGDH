@@ -1,4 +1,4 @@
-    package com.raven.banco;
+package com.raven.banco;
 
 import java.sql.*;
 import javax.swing.JOptionPane;
@@ -17,6 +17,12 @@ public class ConexaoBD {
     /**
      * Variavel para login com banco
      */
+    // Constantes para conexão com o banco de dados
+    private static final String URL = "jdbc:mysql://localhost/dev05";       // Exemplo: "jdbc:mysql://localhost/dev05"
+    private static final String USER = "root";     // Exemplo: "root"
+    private static final String PASSWORD = "#Wiccan13#"; // Exemplo: "password"
+    private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
+
     private final String url = "jdbc:mysql://localhost/dev05";
     private final String user = "root";
     private final String pass = "#Wiccan13#";
@@ -41,6 +47,19 @@ public class ConexaoBD {
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             JOptionPane.showMessageDialog(null, "Erro ao conectar com o banco de dados! :)" + e.getMessage());
             return false;
+        }
+    }
+
+    public static Connection getConnection() throws SQLException {
+        try {
+            // Carregar o driver JDBC
+            Class.forName(DRIVER);
+            // Retornar a conexão com o banco de dados
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("Driver JDBC não encontrado!", e);
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao conectar ao banco de dados!", e);
         }
     }
 

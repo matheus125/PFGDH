@@ -2,6 +2,9 @@ package view.com.raven.main;
 
 import view.com.raven.event.EventMenuSelected;
 import com.raven.banco.ConexaoBD;
+import com.raven.controller.ControllerFrequencia;
+import com.raven.controller.ControllerSenha;
+import com.raven.dao.FrequenciaDAO;
 import com.raven.swing.icon.GoogleMaterialDesignIcons;
 import com.raven.swing.icon.IconFontSwing;
 import view.com.raven.form.Form_Home;
@@ -23,6 +26,7 @@ import view.com.raven.component.CardRelatorio;
 
 public class Main extends javax.swing.JFrame {
 
+    
     private Form_Home home;
     private Form_Funcionarios formFuncionarios;
     private Form_Clientes formClientes;
@@ -92,6 +96,7 @@ public class Main extends javax.swing.JFrame {
                         resposta = JOptionPane.showConfirmDialog(rootPane, "Deseja realmente sair do sistema?");
                         if (resposta == JOptionPane.YES_OPTION) {
                             salvarUserLogsExit();
+                            
                             System.exit(0);
                             con.getfecharConexao();
                         }

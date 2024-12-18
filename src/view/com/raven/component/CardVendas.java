@@ -4,8 +4,10 @@ import com.raven.banco.ConexaoBD;
 import com.raven.controller.ControllerDependentes;
 import com.raven.controller.ControllerRelatorios;
 import com.raven.controller.ControllerSenha;
+import com.raven.dao.FrequenciaDAO;
 import com.raven.dao.SenhaDao;
 import com.raven.dao.TitularDao;
+import com.raven.model.Frequencia;
 import com.raven.model.Relatorios;
 import com.raven.model.Senha;
 import com.raven.model.Titular;
@@ -29,7 +31,7 @@ import view.com.raven.swing.ScrollBar;
 
 public final class CardVendas extends javax.swing.JPanel {
 
-    int id_clientes, contador = 400;
+    int id_clientes, id_frequencia, contador = 400;
 
     String idade_dependente, genero_dependente, data2, genero, deficiencia, idade, nome_dependente, dependencia;
 
@@ -55,7 +57,7 @@ public final class CardVendas extends javax.swing.JPanel {
         txtgenero.setVisible(false);
         txtdeficiencia.setVisible(false);
         setOpaque(false);
-        tabela_cliente_titular("select t.id, t.nome_Completo, t.cpf, t.rg, t.idade_cliente, t.genero_cliente, d.nome_dependente, d.Idade, d.genero, d.dependencia_cliente from tb_titular t left join tb_dependentes d USING (id) order by t.nome_Completo;");
+        tabela_cliente_titular("select t.id, t.nome_Completo, t.cpf, t.rg, t.idade_cliente, t.genero_cliente, t.status_Cliente, d.nome_dependente, d.Idade, d.genero, d.dependencia_cliente from tb_titular t left join tb_dependentes d USING (id) order by t.nome_Completo;");
 
         // A  linha Abaixo exibe a Data Atual do Sistema.
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
@@ -75,17 +77,19 @@ public final class CardVendas extends javax.swing.JPanel {
         spTableCliente_Titular.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
 
         ArrayList dados = new ArrayList();
-        String[] colunas = new String[]{"TITULAR", "CPF", "IDADE", "GÊNERO"};
+        String[] colunas = new String[]{"TITULAR", "CPF", "IDADE", "GÊNERO", "STATUS"};
         con.getConectar();
         con.executarSql(Sql);
         //Inserir dados na tabela  "ID", "NOME", "CPF", "RG", 
         try {
             con.getResultSet().first();
             do {
-                dados.add(new Object[]{con.getResultSet().getString("t.nome_Completo"),
+                dados.add(new Object[]{
+                    con.getResultSet().getString("t.nome_Completo"),
                     con.getResultSet().getString("t.cpf"),
                     con.getResultSet().getInt("t.idade_cliente"),
-                    con.getResultSet().getString("t.genero_cliente")
+                    con.getResultSet().getString("t.genero_cliente"),
+                    con.getResultSet().getString("t.status_Cliente")
                 });
             } while (con.getResultSet().next());
         } catch (SQLException e) {
@@ -103,6 +107,8 @@ public final class CardVendas extends javax.swing.JPanel {
         table_cliente_Titular.getColumnModel().getColumn(2).setResizable(false);
         table_cliente_Titular.getColumnModel().getColumn(3).setPreferredWidth(90);
         table_cliente_Titular.getColumnModel().getColumn(3).setResizable(false);
+        table_cliente_Titular.getColumnModel().getColumn(4).setPreferredWidth(90);
+        table_cliente_Titular.getColumnModel().getColumn(4).setResizable(false);
         table_cliente_Titular.getTableHeader().setReorderingAllowed(false);
 
         table_cliente_Titular.setAutoResizeMode(table_cliente_Titular.AUTO_RESIZE_OFF);
@@ -113,8 +119,10 @@ public final class CardVendas extends javax.swing.JPanel {
     //METODO PARA SALVAR SENHAS TITULADAS
     public void salvarSenhas() {
         String nome, idade, genero, deficiente;
+        int id_frequencia;
 
         nome = txtCliente.getText();
+        id_frequencia = Integer.parseInt(txtid_cliente.getText());
         idade = txtidade1.getText();
         genero = txtgenero.getText();
         deficiente = txtdeficiencia.getText();
@@ -128,6 +136,14 @@ public final class CardVendas extends javax.swing.JPanel {
             senha.setData_refeicao(data2);
 
             System.out.println(senha);
+
+            // Criando um objeto Frequencia
+            Frequencia frequencia = new Frequencia(id_frequencia, nome, new Date(), "presente");
+
+            // Adicionando frequência ao banco de dados
+            FrequenciaDAO frequenciaDAO = new FrequenciaDAO();
+            frequenciaDAO.adicionarFrequencia(frequencia);
+            frequenciaDAO.adicionarFrequenciaGeral(frequencia);
 
             boolean resultado = controllerSenha.controlSaveSenhas(senha);
             if (resultado == true) {
@@ -164,7 +180,7 @@ public final class CardVendas extends javax.swing.JPanel {
         titular.setPesquisar(txtPesquisarNomeClientes.getText());
         titular = titularDao.buscarClientes(titular);
         id_clientes = Integer.parseInt((String.valueOf(titular.getId())));
-        tabela_cliente_titular("select t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, d.nome_dependente from tb_titular t left join tb_dependentes d on d.id_titular = t.id\n"
+        tabela_cliente_titular("select t.id, t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, t.status_Cliente, d.nome_dependente from tb_titular t left join tb_dependentes d on d.id_titular = t.id\n"
                 + "where t.nome_Completo like '%" + titular.getPesquisar() + "%' or t.cpf like '%" + titular.getPesquisar() + "'");
     }
 
@@ -188,6 +204,7 @@ public final class CardVendas extends javax.swing.JPanel {
         txtidade1 = new javax.swing.JTextField();
         txtgenero = new javax.swing.JTextField();
         txtdeficiencia = new javax.swing.JTextField();
+        txtid_cliente = new javax.swing.JLabel();
 
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Nome Completo:");
@@ -288,7 +305,9 @@ public final class CardVendas extends javax.swing.JPanel {
                         .addContainerGap()
                         .addComponent(txtData_refeicao, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(186, 186, 186)
+                        .addGap(40, 40, 40)
+                        .addComponent(txtid_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(59, 59, 59)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -336,10 +355,12 @@ public final class CardVendas extends javax.swing.JPanel {
                                         .addComponent(txtPesquisarNomeClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGap(34, 34, 34))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnTitulada)
-                                    .addComponent(btnGenerico)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtid_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnTitulada)
+                                        .addComponent(btnGenerico))))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnBuscarClienteTitular, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -362,11 +383,14 @@ public final class CardVendas extends javax.swing.JPanel {
     private void table_cliente_TitularMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_cliente_TitularMouseClicked
         String nome = "" + table_cliente_Titular.getValueAt(table_cliente_Titular.getSelectedRow(), 0);
         con.getConectar();
-        con.executarSql("select t.id, t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, s.deficiencia, d.nome_dependente, d.Idade, d.genero, d.dependencia_cliente from tb_titular t left join tb_dependentes d on d.id_titular = t.id left join tb_socio_economico_saude s on s.id_titular = t.id where t.nome_Completo ='" + nome + "'");
+        con.executarSql("select t.id,t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, s.deficiencia, d.nome_dependente, d.Idade, d.genero, d.dependencia_cliente from tb_titular t left join tb_dependentes d on d.id_titular = t.id left join tb_socio_economico_saude s on s.id_titular = t.id where t.nome_Completo ='" + nome + "'");
         DefaultTableModel modelo = (DefaultTableModel) table_cliente_Dependente.getModel();
         modelo.setNumRows(0);
         try {
             while (con.getResultSet().next()) {
+
+                txtid_cliente.setText(con.getResultSet().getString("t.id"));
+
                 txtCliente.setText(con.getResultSet().getString("t.nome_Completo"));
                 nome_dependente = con.getResultSet().getString("d.nome_dependente");
 
@@ -375,10 +399,10 @@ public final class CardVendas extends javax.swing.JPanel {
 
                 txtgenero.setText(con.getResultSet().getString("t.genero_cliente"));
                 genero = txtgenero.getText();
-                
+
                 txtdeficiencia.setText(con.getResultSet().getString("s.deficiencia"));
                 deficiencia = txtdeficiencia.getText();
-                
+
                 idade_dependente = con.getResultSet().getString("d.Idade");
 //                idade_dependente = txtidade2.getText();
 
@@ -438,6 +462,10 @@ public final class CardVendas extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Cancelado!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
             txtCliente.setText("");
         }
+
+        String nome = txtCliente.getText();
+
+
     }//GEN-LAST:event_btnTituladaActionPerformed
 
     private void btnGenericoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenericoActionPerformed
@@ -529,6 +557,7 @@ public final class CardVendas extends javax.swing.JPanel {
     private javax.swing.JTextField txtPesquisarNomeClientes;
     private javax.swing.JTextField txtdeficiencia;
     private javax.swing.JTextField txtgenero;
+    private javax.swing.JLabel txtid_cliente;
     private javax.swing.JTextField txtidade1;
     private javax.swing.JLabel ultimaSenha;
     // End of variables declaration//GEN-END:variables

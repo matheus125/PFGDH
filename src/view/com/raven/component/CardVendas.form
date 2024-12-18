@@ -23,7 +23,9 @@
                       <Component id="txtData_refeicao" min="-2" pref="87" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="186" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
+                      <Component id="txtid_cliente" min="-2" pref="87" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="txtCliente" min="-2" pref="210" max="-2" attributes="0"/>
@@ -87,10 +89,13 @@
                                   </Group>
                                   <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="103" alignment="1" groupAlignment="3" attributes="0">
-                                  <Component id="txtCliente" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="btnTitulada" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="btnGenerico" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                                  <Component id="txtid_cliente" min="-2" pref="12" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="txtCliente" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btnTitulada" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btnGenerico" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -273,6 +278,8 @@
     <Component class="javax.swing.JTextField" name="txtgenero">
     </Component>
     <Component class="javax.swing.JTextField" name="txtdeficiencia">
+    </Component>
+    <Component class="javax.swing.JLabel" name="txtid_cliente">
     </Component>
   </SubComponents>
 </Form>

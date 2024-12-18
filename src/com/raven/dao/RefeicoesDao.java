@@ -8,6 +8,8 @@ import javax.swing.JOptionPane;
 
 public class RefeicoesDao extends ConexaoBD {
 
+    int sobra1;
+
     public boolean daoSalvarSenha(Refeicoes refeicoes) {
 
         String SalvarSenha = "call sp_salvar_refeicoes_vendidas ("
@@ -38,6 +40,30 @@ public class RefeicoesDao extends ConexaoBD {
             while (this.getResultSet().next()) {
                 total = this.getResultSet().getInt(2) + "";
             }
+
+            return total;
+
+        } catch (SQLException e) {
+            return total;
+        }
+    }
+
+    public String retornarTotalSOBRA() {
+
+        String total = "";
+        int totalsobra;
+        
+        this.getConectar();
+        try {
+
+            this.executarSql("Select * from tb_refeicoes_vendidas");
+
+            while (this.getResultSet().next()) {
+                total = this.getResultSet().getInt(2) + "";
+            }
+            
+            totalsobra = 400 - Integer.parseInt(total);
+            total = Integer.toString(totalsobra);
 
             return total;
 

@@ -1,6 +1,13 @@
 package view.com.raven.component;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.raven.banco.ConexaoBD;
 import com.raven.controller.ControllerClientes;
+import com.raven.controller.ControllerFrequencia;
 import com.raven.controller.ControllerRefeicoes;
 import com.raven.controller.ControllerRelatorios;
 import com.raven.controller.ControllerSenha;
@@ -9,11 +16,16 @@ import com.raven.model.Refeicoes;
 import com.raven.model.Relatorios;
 import com.raven.model.Senha;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,12 +38,17 @@ import view.com.raven.swing.ScrollBar;
 
 public class CardExpediente extends javax.swing.JPanel {
 
-    String data2;
+    String data2, nome = "", result;
+
+    ConexaoBD con = new ConexaoBD();
+    PreparedStatement pst = null;
+    ResultSet rs = null;
 
     ControllerSenha controllerSenha = new ControllerSenha();
     ControllerRefeicoes controllerRefeicoes = new ControllerRefeicoes();
     ControllerRelatorios controllerRelatorios = new ControllerRelatorios();
     ControllerClientes controllerClientes = new ControllerClientes();
+    ControllerFrequencia controllerFrequencia = new ControllerFrequencia();
 
     Refeicoes refeicoes = new Refeicoes();
     Relatorios relatorios = new Relatorios();
@@ -45,7 +62,7 @@ public class CardExpediente extends javax.swing.JPanel {
         txtData_refeicao.setVisible(false);
         setOpaque(false);
         tabela_senha();
-
+        con.getConectar();
     }
 
     //LISTAR SENHAS NA TABELA
@@ -265,23 +282,28 @@ public class CardExpediente extends javax.swing.JPanel {
 
     private void btnSenhasGeradasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSenhasGeradasActionPerformed
         tabela_senha();
+
     }//GEN-LAST:event_btnSenhasGeradasActionPerformed
 
     private void btnFecharDiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharDiaActionPerformed
         String resultado = JOptionPane.showInputDialog(null, "Insira uma senha de Administrador para encerrar o expediente.");
 
+        int total;
+        
         //VERIFICAÇÃO DE SENHA DE ADMINISTRADOR PARA FECHAR O SISTEMA.
         if (controllerSenha.controlChecarSenha(resultado) == 1) {
             //RECEBENDO TOTAL DE REFEIÇÕES SERVIDAS E JOGANDO O VALOR PARA UMA VARIÁVEL LOCAL RECEBER O VALOR.
             String totalServido = JOptionPane.showInputDialog(null, "Insira o total de refeições servidas.");
+            
             //CAMPOS PARA GERAR RELATÓRIO
             String ocorr
-                    = "Cardápio: " + txtCardapio.getText().toUpperCase()
-                    + "\n Início das senhas: " + txtInicioSenhas.getText().toUpperCase()
-                    + "\n Término das senhas: " + txt_terminoSenhas.getText().toUpperCase()
-                    + "\n Término da distribuição: " + txt_terminoDistribuicao.getText().toUpperCase()
-                    + "\n Ocorrências: " + txt_ocorrencia.getText().toUpperCase();
-
+                    = "\nCardápio: " + txtCardapio.getText().toUpperCase()
+                    + "\nInício das senhas: " + txtInicioSenhas.getText().toUpperCase()
+                    + "\nTérmino das senhas: " + txt_terminoSenhas.getText().toUpperCase()
+                    + "\nTérmino da distribuição: " + txt_terminoDistribuicao.getText().toUpperCase()
+                    + "\nNome:" + nome.toUpperCase()
+                   
+                    + "\nOcorrências: " + txt_ocorrencia.getText().toUpperCase();
             //PEGANDO VALOR DA VARIÁVEL "totalServido", E PASSANDO COMO PARÂMETRO PARA SALVAR NA TABELA "tb_refeicoes_vendidas".
             refeicoes.setTotal_servido(Integer.parseInt(totalServido));
 
@@ -294,7 +316,7 @@ public class CardExpediente extends javax.swing.JPanel {
 
             //PASSANDO OS DADOS DOS RELATORIOS COMO PARAMETROS PARA SEREM LIDOS NO METODO "lerParaOBL" DA CLASSE RelatoriosDAO.
             controllerRelatorios.controlLerOBL(relatorios);
-            
+
             //VERIFICAÇÃO SE O SISTEMA FOI FECHADO, CASO JÁ TENHA ELE EXIBIRA UMA MENSAGEM.
             if (controllerRelatorios.controlSaveRelatorios(relatorios)) {//PASSANDO DADOS PARA O BACK-END, PARA SEREM SALVOS NA TABELA "tb_relatorios".
                 //LIMPAR TABELA AO SALVAR E FECHAR O DIA. 
@@ -304,10 +326,12 @@ public class CardExpediente extends javax.swing.JPanel {
 
                 //LIMPAR CAMPOS DE RELATORIOS.
                 limparCampos();
+                gerarPDF();
 
                 try {
                     relatoriosDao.escreverNoRELATORIOPDF(relatoriosDao.lerRelatorios(dateFormat.format(date), ocorr));
                     controllerSenha.controlLimparSenhas();
+                    controllerFrequencia.controllimparFrequencia();
                     controllerClientes.controlLimparResumodia();
                 } catch (FileNotFoundException err) {
                     err.printStackTrace();
@@ -320,6 +344,8 @@ public class CardExpediente extends javax.swing.JPanel {
         } else {
             JOptionPane.showMessageDialog(null, "Senha de administrador não confere!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
         } //FIM DA CONDIÇÃO PARA VERIFICAR SENHA.
+
+
     }//GEN-LAST:event_btnFecharDiaActionPerformed
 
     @Override
@@ -331,6 +357,52 @@ public class CardExpediente extends javax.swing.JPanel {
         g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
         g2.fillRect(getWidth() - 20, 0, getWidth(), getHeight());
         super.paintChildren(grphcs);
+    }
+
+    private void gerarPDF() {
+        Document document = new Document();
+        //gerar o documento pdf
+        try {
+            PdfWriter.getInstance(document, new FileOutputStream("Clientes.pdf"));
+            document.open();
+            Date data = new Date();
+            DateFormat formatador = DateFormat.getDateInstance(DateFormat.FULL);
+            document.add(new Paragraph(formatador.format(data)));
+            document.add(new Paragraph("Lista de Clientes"));
+            document.add(new Paragraph(" "));
+            //tabela
+            PdfPTable tabela = new PdfPTable(1);
+            PdfPCell col1 = new PdfPCell(new Paragraph("NOME COMPLETO"));
+            document.add(new Paragraph(" "));
+            tabela.addCell(col1);
+            //consultando dados do banco de dados
+            String readLista = "SELECT * FROM tb_frequencia_diaria order by nome";
+
+            try {
+                con.getConectar();
+                pst = con.getCon().prepareStatement(readLista);
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                    tabela.addCell(rs.getString(3));
+                }
+                con.getfecharConexao();
+            } catch (Exception erro_sql) {
+                System.out.println(erro_sql);
+            }
+            document.add(tabela);
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            document.close();
+        }
+
+        //abrir o documento pdf no leito padrão do sistema
+        try {
+            Desktop.getDesktop().open(new File("Clientes.pdf"));
+        } catch (Exception e2) {
+            System.out.println(e2);
+        }
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -120,7 +120,7 @@ public class CardBackupSistema extends javax.swing.JPanel {
         Process p = null;
         try {
             Runtime runtime = Runtime.getRuntime();
-            p = runtime.exec("C:/Program Files/MySQL/MySQL Server 8.0/bin/mysqldump.exe -v -v -v --host=localhost --user=root --password=#Wiccan13# --port=3306 --protocol=tcp --force --allow-keywords --compress  --add-drop-table --default-character-set=latin1 --hex-blob  --result-file=" + filename + " --databases presidente_figueiredo");
+            p = runtime.exec("C:/Program Files/MySQL/MySQL Server 8.0/bin/mysqldump.exe -v -v -v --host=localhost --user=root --password=#Wiccan13# --port=3306 --protocol=tcp --force --allow-keywords --compress  --add-drop-table --default-character-set=latin1 --hex-blob  --result-file=" + filename + " --databases uniao");
             int processComplete = p.waitFor();
             if (processComplete == 0) {
                 JOptionPane.showMessageDialog(null, "Backup Gerado!");
