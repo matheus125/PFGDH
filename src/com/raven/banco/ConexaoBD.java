@@ -194,4 +194,10 @@ public class ConexaoBD {
     public void setResultSet(ResultSet resultSet) {
         this.resultSet = resultSet;
     }
+
+    public void executarSql(ResultSet Sql) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    
 }
