@@ -10,7 +10,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import javax.swing.JOptionPane;
 
 public class CardBackupSistema extends javax.swing.JPanel {
 
@@ -41,18 +44,10 @@ public class CardBackupSistema extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        JB_Backup = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         table1 = new view.com.raven.swing.Table();
         TXT_BACKUP = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-
-        JB_Backup.setText("Gerar Arquivo");
-        JB_Backup.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JB_BackupActionPerformed(evt);
-            }
-        });
 
         table1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -77,13 +72,11 @@ public class CardBackupSistema extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(JB_Backup)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1))
-                    .addComponent(TXT_BACKUP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jScrollPane2)
+                        .addComponent(TXT_BACKUP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(483, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -92,49 +85,120 @@ public class CardBackupSistema extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(TXT_BACKUP, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(JB_Backup)
-                    .addComponent(jButton1))
+                .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 333, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void JB_BackupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_BackupActionPerformed
-        JFileChooser path = new JFileChooser();
-        path.showOpenDialog(this);
-        String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-        try {
-            File f = path.getSelectedFile();
-            location = f.getAbsolutePath();
-            location = location.replace('\\', '/');
-            filename = location + "_" + date + ".sql";
-            TXT_BACKUP.setText(filename);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
+    // Método para criar uma pasta
+    public static void criarPasta(String caminho) {
+        File pasta = new File(caminho);
+
+        // Verifica se a pasta já existe
+        if (!pasta.exists()) {
+            boolean criada = pasta.mkdir(); // Cria a pasta
+            if (criada) {
+//                System.out.println("Pasta criada com sucesso!");
+            } else {
+//                System.out.println("Falha ao criar a pasta.");
+            }
+        } else {
+//            JOptionPane.showMessageDialog(null, "A pasta já existe.\n");
         }
-    }//GEN-LAST:event_JB_BackupActionPerformed
+    }
+
+    // Método para ler o conteúdo da pasta
+    public static void lerConteudoPasta(String caminho) {
+        File pasta = new File(caminho);
+
+        // Verifica se a pasta existe
+        if (pasta.exists() && pasta.isDirectory()) {
+            String[] conteudo = pasta.list(); // Lista os arquivos e pastas dentro da pasta
+            if (conteudo != null && conteudo.length > 0) {
+                System.out.println("Conteúdo da pasta:");
+                for (String item : conteudo) {
+                    System.out.println(item);
+                }
+            } else {
+//                System.out.println("A pasta está vazia.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "A pasta não existe ou não é um diretório.\n");
+        }
+    }
+
+    public static void gerarBackup(String filename) {
+        // Caminho do mysqldump e outros parâmetros
+        String mysqldumpPath = "C:/Program Files/MySQL/MySQL Server 8.0/bin/mysqldump.exe";
+        String host = "localhost";
+        String user = "root";
+        String password = "#Wiccan13#";
+        String database = "dev05";
+        String port = "3306";
+
+        // Comando completo do mysqldump
+        String command = String.format("\"%s\" -v -v -v --host=%s --user=%s --password=%s --port=%s --protocol=tcp --force --allow-keywords --compress --add-drop-table --default-character-set=latin1 --hex-blob --result-file=%s --databases %s",
+                mysqldumpPath, host, user, password, port, filename, database);
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
+
+        // Definir o diretório de trabalho, caso necessário
+        processBuilder.directory(new java.io.File("C:/"));
+
+        try {
+            // Iniciar o processo
+            Process process = processBuilder.start();
+
+            // Captura de erros e saída padrão do processo
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            BufferedReader outputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            StringBuilder output = new StringBuilder();
+            StringBuilder errors = new StringBuilder();
+
+            // Captura da saída do processo
+            while ((line = outputReader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+
+            // Captura dos erros do processo
+            while ((line = errorReader.readLine()) != null) {
+                errors.append(line).append("\n");
+            }
+
+            // Aguarda o término do processo
+            int processComplete = process.waitFor();
+
+            // Verifica o resultado
+            if (processComplete == 0) {
+                JOptionPane.showMessageDialog(null, "Backup Gerado com sucesso!\n" + output.toString());
+            } else {
+                JOptionPane.showMessageDialog(null, "Falha ao gerar Backup!\nErros: " + errors.toString());
+            }
+        } catch (IOException | InterruptedException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao executar o comando: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Process p = null;
-        try {
-            Runtime runtime = Runtime.getRuntime();
-            p = runtime.exec("C:/Program Files/MySQL/MySQL Server 8.0/bin/mysqldump.exe -v -v -v --host=localhost --user=root --password=#Wiccan13# --port=3306 --protocol=tcp --force --allow-keywords --compress  --add-drop-table --default-character-set=latin1 --hex-blob  --result-file=" + filename + " --databases uniao");
-            int processComplete = p.waitFor();
-            if (processComplete == 0) {
-                JOptionPane.showMessageDialog(null, "Backup Gerado!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Falha ao gerar Backup!");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
+        String caminhoPasta = "C:/Backup"; // Caminho da pasta a ser criada e lida
+
+        // Criar a pasta
+        criarPasta(caminhoPasta);
+
+        String filename = "C:/Backup/dev05.sql"; // Defina o caminho do arquivo de backup
+        gerarBackup(filename);
+
+        // Ler o conteúdo da pasta
+        lerConteudoPasta(caminhoPasta);
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton JB_Backup;
     private javax.swing.JLabel TXT_BACKUP;
     private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane2;

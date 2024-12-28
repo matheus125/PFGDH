@@ -184,53 +184,6 @@ public final class CardVendas extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Erro ao Salvar!");
         }
     }//FIM.
-
-    //METODO PARA BUSCAR CLIENTES NA BARRA DE PESQUISA
-//    public void Buscar() {
-//        String pesquisa = txtPesquisarNomeClientes.getText().trim();
-//        titular.setPesquisar(pesquisa);
-//        titular = titularDao.buscarClientes(titular);
-//        id_clientes = Integer.parseInt(String.valueOf(titular.getId()));
-//
-//        String sql = "SELECT t.id, t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, t.status_Cliente, "
-//                + "GROUP_CONCAT(d.nome_dependente ORDER BY d.nome_dependente) AS dependentes "
-//                + "FROM tb_titular t "
-//                + "LEFT JOIN tb_dependentes d ON d.id_titular = t.id "
-//                + "WHERE t.nome_Completo LIKE ? OR t.cpf LIKE ? "
-//                + "GROUP BY t.id, t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, t.status_Cliente";
-//
-//        try ( Connection conn = ConexaoBD.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
-//
-//            // Definir os parâmetros
-//            stmt.setString(1, "%" + pesquisa + "%"); // Nome
-//            stmt.setString(2, "%" + pesquisa + "%"); // CPF
-//
-//            try ( ResultSet rs = stmt.executeQuery()) {
-//                while (rs.next()) {
-//                    int id = rs.getInt("id");
-//                    String nomeCompleto = rs.getString("nome_Completo");
-//                    String cpf = rs.getString("cpf");
-//                    int idade = rs.getInt("idade_cliente");
-//                    String genero = rs.getString("genero_cliente");
-//                    String status = rs.getString("status_Cliente");
-//                    String dependentes = rs.getString("dependentes"); // Dependentes concatenados
-//
-//                    // Exemplo de como você pode exibir esses dados
-//                    tabela_cliente_titular(id, nomeCompleto, cpf, idade, genero, status, dependentes);
-//                }
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace(); // Tratar exceções adequadamente
-//        }
-//    }
-    
-//    SELECT t.id, t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, t.status_Cliente, " +
-//                 "GROUP_CONCAT(d.nome_dependente ORDER BY d.nome_dependente) AS dependentes " +
-//                 "FROM tb_titular t " +
-//                 "LEFT JOIN tb_dependentes d ON d.id_titular = t.id WHERE t.nome_Completo LIKE ? OR t.cpf LIKE ? GROUP BY t.id, t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, t.status_Cliente" +
-//                 "WHERE t.nome_Completo LIKE ? OR t.cpf LIKE ? " +
-//                 "GROUP BY t.id, t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, t.status_Cliente
-    
     
     public void Buscar() {
         titular.setPesquisar(txtPesquisarNomeClientes.getText());
@@ -239,12 +192,9 @@ public final class CardVendas extends javax.swing.JPanel {
         tabela_cliente_titular("SELECT t.id, t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, "
                 + "t.status_Cliente, GROUP_CONCAT(d.nome_dependente ORDER BY d.nome_dependente) AS dependentes "
                 + "FROM tb_titular t LEFT JOIN tb_dependentes d ON d.id_titular = t.id WHERE t.nome_Completo like '%" + titular.getPesquisar() + "%' or t.cpf like '%" + titular.getPesquisar() + "' GROUP BY t.id, t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, t.status_Cliente");
-               
+
     }
-    
-    
-    
-    
+
 // Método para popular a tabela com os resultados
     private void tabela_cliente_titular(List<Titular> clientes) {
         String nome = "" + table_cliente_Titular.getValueAt(table_cliente_Titular.getSelectedRow(), 0);
