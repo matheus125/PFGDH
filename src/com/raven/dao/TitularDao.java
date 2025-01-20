@@ -3,10 +3,20 @@ package com.raven.dao;
 import com.raven.banco.ConexaoBD;
 import com.raven.model.Titular;
 import com.raven.model.Endereco;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 public class TitularDao extends ConexaoBD {
+
+    public Statement stm;
+    public ResultSet rs;
+    public Connection con = null;
+    private Statement statement;
+    private ResultSet resultSet;
 
     //METODO PARA SALVAR TITULAR
     public boolean daoSalvarTitular(Titular titular, Endereco endereco) {
@@ -23,7 +33,7 @@ public class TitularDao extends ConexaoBD {
                 + "'" + titular.getEstado_Civil() + "',"
                 + "'" + titular.getRg() + "',"
                 + "'" + titular.getCpf() + "',"
-                + "'" + titular.getNis()+ "',"
+                + "'" + titular.getNis() + "',"
                 + "'" + titular.getStatus_Cliente() + "',"
                 + "'" + endereco.getCep() + "',"
                 + "'" + endereco.getBairro() + "',"
@@ -166,7 +176,6 @@ public class TitularDao extends ConexaoBD {
         this.executarSql("select t.id, t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, d.nome_dependente from tb_titular t left join tb_dependentes d on d.id_titular = t.id\n"
                 + "where t.nome_Completo like '%" + titular.getPesquisar() + "%'");
         try {
-
             this.getResultSet().first();
             titular.setId(this.getResultSet().getInt("t.id"));
             titular.setNome_Completo(this.getResultSet().getString("t.nome_Completo"));
@@ -174,7 +183,6 @@ public class TitularDao extends ConexaoBD {
             titular.setRg(this.getResultSet().getString("t.rg"));
             titular.setIdade_cliente(this.getResultSet().getInt("t.idade_cliente"));
             titular.setGenero_cliente(this.getResultSet().getString("t.genero_cliente"));
-
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Cliente não cadastrado!");
         } finally {
@@ -182,5 +190,5 @@ public class TitularDao extends ConexaoBD {
         }
         return titular;
     }//FIM.
-
+    
 }

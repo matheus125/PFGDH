@@ -301,8 +301,6 @@ public class CardExpediente extends javax.swing.JPanel {
                     + "\nInício das senhas: " + txtInicioSenhas.getText().toUpperCase()
                     + "\nTérmino das senhas: " + txt_terminoSenhas.getText().toUpperCase()
                     + "\nTérmino da distribuição: " + txt_terminoDistribuicao.getText().toUpperCase()
-                    + "\nNome:" + nome.toUpperCase()
-                   
                     + "\nOcorrências: " + txt_ocorrencia.getText().toUpperCase();
             //PEGANDO VALOR DA VARIÁVEL "totalServido", E PASSANDO COMO PARÂMETRO PARA SALVAR NA TABELA "tb_refeicoes_vendidas".
             refeicoes.setTotal_servido(Integer.parseInt(totalServido));

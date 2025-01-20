@@ -101,7 +101,7 @@ public final class CardClientes extends javax.swing.JPanel {
         spTableCliente.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
 
         ArrayList dados = new ArrayList();
-        String[] colunas = new String[]{"ID", "Nome", "RG", "CPF", "NIS","IDADE", "SEXO", "STATUS", "DATA CADASTRO"};
+        String[] colunas = new String[]{"ID", "Nome", "RG", "CPF", "NIS", "IDADE", "SEXO", "STATUS", "DATA CADASTRO"};
 
         con.getConectar();
         con.executarSql(Sql);
@@ -769,7 +769,10 @@ public final class CardClientes extends javax.swing.JPanel {
     public void saveDependentes() {
         int cliIdadedep;
         String nomeDependente;
+
         nomeDependente = txtnomeCompletoDependente.getText();
+        // Recuperando o item selecionado
+        String selectedOption = (String) comboParentesco.getSelectedItem();
 
         cliIdadedep = Integer.parseInt(txtIdateDependente.getText());
 
@@ -1623,7 +1626,7 @@ public final class CardClientes extends javax.swing.JPanel {
         jLabel42.setForeground(new java.awt.Color(255, 255, 255));
         jLabel42.setText("Dependencia:");
 
-        comboParentesco.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CÔNJUGE", "UNIÃO ESTÁVEL", "FILHO/ENTEADO", "IRMÃO", "AVÓ", "INCAPAZ", "AGREGADO" }));
+        comboParentesco.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CÔNJUGE", "UNIÃO ESTÁVEL", "FILHO/ENTEADO", "IRMÃO", "NETO", "AVÓ", "INCAPAZ", "AGREGADO" }));
         comboParentesco.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboParentescoActionPerformed(evt);

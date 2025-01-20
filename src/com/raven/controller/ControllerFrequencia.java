@@ -7,6 +7,6 @@ public class ControllerFrequencia {
     FrequenciaDAO frequenciaDAO = new FrequenciaDAO();
 
     public boolean controllimparFrequencia() {
-        return this.frequenciaDAO.limparTabelaFrequencia_diaria();
+        return this.frequenciaDAO.limparTabelaFrequenciaDiaria();
     }
 }

@@ -417,7 +417,7 @@ public class CONFIGURACAO extends javax.swing.JFrame {
         try {
             Class.forName(driver);
             CONEXAO = DriverManager.getConnection("jdbc:mysql://" + SERVIDOR + ":"
-                    + PORTA_CONEXAO + "/TESTE_DEV", USUARIO, SENHA);
+                    + PORTA_CONEXAO + "/dev05", USUARIO, SENHA);
             com = true;
         } catch (ClassNotFoundException Fonte) {
             JOptionPane.showMessageDialog(null, "Driver não localizado");

@@ -61,7 +61,6 @@ public class TelaLogin extends javax.swing.JFrame {
             pst.execute();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro em salvar" + e);
-
         }
     }
 

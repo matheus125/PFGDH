@@ -19,7 +19,7 @@ public class SenhaDao extends ConexaoBD {
     
     String texto = "PRATO CHEIO B.U";
 
-    //SALVAR SENHAS TITULADAS AOS CLIENTES OU DEPENDENTES.
+    //SALVAR SENHAS TITULADAS AOS CLIENTES OU DEPENdDENTES.
     public boolean daoSalvarSenha(Senha senha) {
 
         String SalvarSenha = "call sp_salvar_senhas ("
@@ -27,6 +27,7 @@ public class SenhaDao extends ConexaoBD {
                 + "'" + senha.getGenero() + "',"
                 + "'" + senha.getIdade() + "',"
                 + "'" + senha.getDeficiencia()+ "',"
+                + "'" + senha.getStatus_cliente()+ "',"
                 + "'" + senha.getData_refeicao() + "'"
                 + ")";
         try {
@@ -141,7 +142,8 @@ public class SenhaDao extends ConexaoBD {
                 senha.setGenero(this.getResultSet().getString(4));
                 senha.setDeficiencia(this.getResultSet().getString(5));
                 senha.setTipoSenha(this.getResultSet().getString(6));
-                senha.setData_refeicao(this.getResultSet().getString(7));
+                senha.setStatus_cliente(this.getResultSet().getString(7));
+                senha.setData_refeicao(this.getResultSet().getString(8));
                 listSenha.add(senha);
             }
         } catch (SQLException e) {
