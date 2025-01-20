@@ -54,6 +54,7 @@ public final class CardVendas extends javax.swing.JPanel {
         txtData_refeicao.setVisible(false);
         txtgenero.setVisible(false);
         txtdeficiencia.setVisible(false);
+        txtStatus_cliente.setVisible(false);
         setOpaque(false);
         tabela_cliente_titular("select t.id, t.nome_Completo, t.cpf, t.rg, t.idade_cliente, t.genero_cliente, t.status_Cliente, d.nome_dependente, d.Idade, d.genero, d.dependencia_cliente from tb_titular t left join tb_dependentes d USING (id) order by t.nome_Completo;");
 
