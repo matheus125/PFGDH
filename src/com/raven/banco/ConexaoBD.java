@@ -2,6 +2,10 @@ package com.raven.banco;
 
 import java.sql.*;
 import javax.swing.JOptionPane;
+<<<<<<< HEAD
+=======
+import java.sql.DriverManager;
+>>>>>>> eb9b89a (PFGDH_2.1)
 
 public class ConexaoBD {
 
@@ -17,6 +21,7 @@ public class ConexaoBD {
     /**
      * Variavel para login com banco
      */
+<<<<<<< HEAD
     // Constantes para conexão com o banco de dados
     private static final String URL = "jdbc:mysql://localhost/dev05";       // Exemplo: "jdbc:mysql://localhost/dev05"
     private static final String USER = "root";     // Exemplo: "root"
@@ -27,12 +32,33 @@ public class ConexaoBD {
     private final String user = "root";
     private final String pass = "#Wiccan13#";
     private final String driver = "com.mysql.cj.jdbc.Driver";
+=======
+    private static  final String url = "jdbc:mysql://localhost/uniao";
+    private static  final String user = "root";
+    private static  final String pass = "#Wiccan13#";
+    private static  final String driver = "com.mysql.cj.jdbc.Driver";
+>>>>>>> eb9b89a (PFGDH_2.1)
 
     /**
      * metodo para conectar com o banco de dados
      *
      * @return
      */
+<<<<<<< HEAD
+=======
+   
+    
+    public static Connection getConnection() throws SQLException{
+    
+        try {
+            return DriverManager.getConnection(url,user,pass);
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao conectar ao banco de dados", e);
+        }    
+    }
+    
+
+>>>>>>> eb9b89a (PFGDH_2.1)
     public boolean getConectar() {
 
         try {
@@ -50,6 +76,7 @@ public class ConexaoBD {
         }
     }
 
+<<<<<<< HEAD
     public static Connection getConnection() throws SQLException {
         try {
             // Carregar o driver JDBC
@@ -63,6 +90,8 @@ public class ConexaoBD {
         }
     }
 
+=======
+>>>>>>> eb9b89a (PFGDH_2.1)
     /**
      * metodo executa um comando SQL pasado por @parametro um String Sql
      *
@@ -194,10 +223,13 @@ public class ConexaoBD {
     public void setResultSet(ResultSet resultSet) {
         this.resultSet = resultSet;
     }
+<<<<<<< HEAD
 
     public void executarSql(ResultSet Sql) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
     
+=======
+>>>>>>> eb9b89a (PFGDH_2.1)
 }

@@ -10,10 +10,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+<<<<<<< HEAD
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import javax.swing.JOptionPane;
+=======
+
+>>>>>>> eb9b89a (PFGDH_2.1)
 
 public class CardBackupSistema extends javax.swing.JPanel {
 
@@ -44,11 +48,25 @@ public class CardBackupSistema extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+<<<<<<< HEAD
+=======
+        JB_Backup = new javax.swing.JButton();
+>>>>>>> eb9b89a (PFGDH_2.1)
         jScrollPane2 = new javax.swing.JScrollPane();
         table1 = new view.com.raven.swing.Table();
         TXT_BACKUP = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
 
+<<<<<<< HEAD
+=======
+        JB_Backup.setText("Gerar Arquivo");
+        JB_Backup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JB_BackupActionPerformed(evt);
+            }
+        });
+
+>>>>>>> eb9b89a (PFGDH_2.1)
         table1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -72,11 +90,21 @@ public class CardBackupSistema extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
+<<<<<<< HEAD
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton1)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jScrollPane2)
                         .addComponent(TXT_BACKUP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+=======
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(JB_Backup)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1))
+                    .addComponent(TXT_BACKUP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+>>>>>>> eb9b89a (PFGDH_2.1)
                 .addContainerGap(483, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -85,13 +113,20 @@ public class CardBackupSistema extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(TXT_BACKUP, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+<<<<<<< HEAD
                 .addComponent(jButton1)
+=======
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(JB_Backup)
+                    .addComponent(jButton1))
+>>>>>>> eb9b89a (PFGDH_2.1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 333, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+<<<<<<< HEAD
     // Método para criar uma pasta
     public static void criarPasta(String caminho) {
         File pasta = new File(caminho);
@@ -195,10 +230,45 @@ public class CardBackupSistema extends javax.swing.JPanel {
 
         // Ler o conteúdo da pasta
         lerConteudoPasta(caminhoPasta);
+=======
+    private void JB_BackupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_BackupActionPerformed
+        JFileChooser path = new JFileChooser();
+        path.showOpenDialog(this);
+        String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+        try {
+            File f = path.getSelectedFile();
+            location = f.getAbsolutePath();
+            location = location.replace('\\', '/');
+            filename = location + "_" + date + ".sql";
+            TXT_BACKUP.setText(filename);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }//GEN-LAST:event_JB_BackupActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Process p = null;
+        try {
+            Runtime runtime = Runtime.getRuntime();
+            p = runtime.exec("C:/Program Files/MySQL/MySQL Server 8.0/bin/mysqldump.exe -v -v -v --host=localhost --user=root --password=#Wiccan13# --port=3306 --protocol=tcp --force --allow-keywords --compress  --add-drop-table --default-character-set=latin1 --hex-blob  --result-file=" + filename + " --databases uniao");
+            int processComplete = p.waitFor();
+            if (processComplete == 0) {
+                JOptionPane.showMessageDialog(null, "Backup Gerado!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Falha ao gerar Backup!");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+>>>>>>> eb9b89a (PFGDH_2.1)
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+<<<<<<< HEAD
+=======
+    private javax.swing.JButton JB_Backup;
+>>>>>>> eb9b89a (PFGDH_2.1)
     private javax.swing.JLabel TXT_BACKUP;
     private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane2;

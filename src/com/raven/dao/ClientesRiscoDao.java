@@ -15,7 +15,11 @@ public class ClientesRiscoDao extends ConexaoBD {
                 + ")";
         try {
             this.getConectar();
+<<<<<<< HEAD
             this.executarSql(SavarClienteRisco);
+=======
+            this.executar(SavarClienteRisco);
+>>>>>>> eb9b89a (PFGDH_2.1)
             return true;
         } catch (Exception erro) {
             return false;
