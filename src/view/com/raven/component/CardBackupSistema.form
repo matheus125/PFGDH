@@ -18,23 +18,12 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-<<<<<<< HEAD
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="jScrollPane2" max="32767" attributes="0"/>
                       <Component id="TXT_BACKUP" alignment="0" max="32767" attributes="0"/>
                   </Group>
-=======
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jScrollPane2" max="32767" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <Component id="JB_Backup" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="TXT_BACKUP" alignment="0" max="32767" attributes="0"/>
->>>>>>> eb9b89a (PFGDH_2.1)
               </Group>
               <EmptySpace pref="483" max="32767" attributes="0"/>
           </Group>
@@ -46,14 +35,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="TXT_BACKUP" min="-2" pref="21" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-<<<<<<< HEAD
               <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-=======
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="JB_Backup" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
->>>>>>> eb9b89a (PFGDH_2.1)
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jScrollPane2" min="-2" pref="321" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="333" max="32767" attributes="0"/>
@@ -62,17 +44,6 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-<<<<<<< HEAD
-=======
-    <Component class="javax.swing.JButton" name="JB_Backup">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Gerar Arquivo"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="JB_BackupActionPerformed"/>
-      </Events>
-    </Component>
->>>>>>> eb9b89a (PFGDH_2.1)
     <Container class="javax.swing.JScrollPane" name="jScrollPane2">
       <AuxValues>
         <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>

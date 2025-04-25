@@ -44,6 +44,8 @@ CREATE TABLE `tb_dependentes` (
 --
 -- Dumping data for table `tb_dependentes`
 --
+
+
 --
 -- Table structure for table `tb_endereco`
 --
@@ -96,12 +98,6 @@ CREATE TABLE `tb_familia` (
 -- Dumping data for table `tb_familia`
 --
 
-LOCK TABLES `tb_familia` WRITE;
-/*!40000 ALTER TABLE `tb_familia` DISABLE KEYS */;
-INSERT INTO `tb_familia` VALUES (1,1,1),(2,1,2);
-/*!40000 ALTER TABLE `tb_familia` ENABLE KEYS */;
-UNLOCK TABLES;
-
 --
 -- Table structure for table `tb_frequencia_diaria`
 --
@@ -117,17 +113,13 @@ CREATE TABLE `tb_frequencia_diaria` (
   `status` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `cliente_id` (`nome`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `tb_frequencia_diaria`
 --
 
-LOCK TABLES `tb_frequencia_diaria` WRITE;
-/*!40000 ALTER TABLE `tb_frequencia_diaria` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tb_frequencia_diaria` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tb_frequencia_geral`
@@ -144,12 +136,15 @@ CREATE TABLE `tb_frequencia_geral` (
   `status` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `cliente_id` (`nome`)
-) ENGINE=InnoDB AUTO_INCREMENT=606 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=607 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `tb_frequencia_geral`
 --
+
+
+
 --
 -- Table structure for table `tb_funcionario`
 --
@@ -198,6 +193,8 @@ CREATE TABLE `tb_refeicoes_vendidas` (
 --
 -- Dumping data for table `tb_refeicoes_vendidas`
 --
+
+
 --
 -- Table structure for table `tb_relatorios`
 --
@@ -232,10 +229,6 @@ CREATE TABLE `tb_relatorios` (
 -- Dumping data for table `tb_relatorios`
 --
 
-LOCK TABLES `tb_relatorios` WRITE;
-/*!40000 ALTER TABLE `tb_relatorios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tb_relatorios` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tb_resumodia`
@@ -254,10 +247,6 @@ CREATE TABLE `tb_resumodia` (
 -- Dumping data for table `tb_resumodia`
 --
 
-LOCK TABLES `tb_resumodia` WRITE;
-/*!40000 ALTER TABLE `tb_resumodia` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tb_resumodia` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tb_senhas`
@@ -285,10 +274,7 @@ CREATE TABLE `tb_senhas` (
 -- Dumping data for table `tb_senhas`
 --
 
-LOCK TABLES `tb_senhas` WRITE;
-/*!40000 ALTER TABLE `tb_senhas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tb_senhas` ENABLE KEYS */;
-UNLOCK TABLES;
+
 
 --
 -- Table structure for table `tb_socio_economico`
@@ -326,10 +312,6 @@ CREATE TABLE `tb_socio_economico` (
 -- Dumping data for table `tb_socio_economico`
 --
 
-LOCK TABLES `tb_socio_economico` WRITE;
-/*!40000 ALTER TABLE `tb_socio_economico` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tb_socio_economico` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tb_socio_economico_saude`
@@ -359,7 +341,8 @@ CREATE TABLE `tb_socio_economico_saude` (
 -- Dumping data for table `tb_socio_economico_saude`
 --
 
--
+
+--
 -- Table structure for table `tb_titular`
 --
 
@@ -392,6 +375,7 @@ CREATE TABLE `tb_titular` (
 
 --
 -- Dumping data for table `tb_titular`
+--
 
 --
 -- Table structure for table `tb_user`
@@ -441,7 +425,7 @@ CREATE TABLE `tb_userlogs` (
   PRIMARY KEY (`id`),
   KEY `id_user` (`id_user`),
   CONSTRAINT `tb_userlogs_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `tb_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=347 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=349 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -929,4 +913,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-23 15:14:42
+-- Dump completed on 2025-04-25 13:53:08

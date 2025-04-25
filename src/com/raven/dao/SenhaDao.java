@@ -15,13 +15,6 @@ import java.util.Date;
 import javax.swing.JOptionPane;
 
 public class SenhaDao extends ConexaoBD {
-    
-    
-<<<<<<< HEAD
-    String texto = "PRATO CHEIO ALEIXO";
-=======
-    String texto = "PRATO CHEIO B.U";
->>>>>>> eb9b89a (PFGDH_2.1)
 
     //SALVAR SENHAS TITULADAS AOS CLIENTES OU DEPENDENTES.
     public boolean daoSalvarSenha(Senha senha) {
@@ -30,7 +23,8 @@ public class SenhaDao extends ConexaoBD {
                 + "'" + senha.getCliente() + "',"
                 + "'" + senha.getGenero() + "',"
                 + "'" + senha.getIdade() + "',"
-                + "'" + senha.getDeficiencia()+ "',"
+                + "'" + senha.getDeficiencia() + "',"
+                + "'" + senha.getStatus_cliente() + "',"
                 + "'" + senha.getData_refeicao() + "'"
                 + ")";
         try {
@@ -107,27 +101,54 @@ public class SenhaDao extends ConexaoBD {
         }
     }//FIM.
 
-    //RECUPERA A SENHAS E IMPRIME NA IMPRESSORA.
     public String recuperarSenha() {
         this.getConectar();
-        String dadosSenha = "";
-
+        String Nome_Unidade = "PRATO CHEIO ALEIXO";
+        String senha = "";
+        String nomeCliente = "";
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = new Date();
-        
-        String txt = "GOVERNO DO ESTADO DO AMAZONAS\n\n"
-                + "           SENHA: ";
+        Date dataAtual = new Date();
+
+        StringBuilder texto = new StringBuilder();
+        texto.append("GOVERNO DO ESTADO DO AMAZONAS\n\n");
+        texto.append("           SENHA: ");
+
         try {
-            this.executarSql("select id from tb_senhas order by id desc limit 1");
-            while (this.getResultSet().next()) {
-                dadosSenha = ("" + dadosSenha + "" + (this.getResultSet().getInt(1)) + "  ");
+            this.executarSql("SELECT id, cliente FROM tb_senhas ORDER BY id DESC LIMIT 1");
+
+            if (this.getResultSet().next()) {
+                senha = String.valueOf(this.getResultSet().getInt("id"));
+                nomeCliente = this.getResultSet().getString("cliente");
+
+                texto.append(senha).append("\n");
+
+                // Centralizando nome e data
+                String linhaNome = "NOME: " + nomeCliente;
+                String linhaData = dateFormat.format(dataAtual);
+
+                texto.append(centralizarTexto(linhaNome, 35)).append("\n");
+                texto.append(centralizarTexto(linhaData, 35)).append("\n\n");
+
+                texto.append("UNIDADE: ").append(Nome_Unidade).append("\n\n");
+            } else {
+                texto.append("NÃO ENCONTRADO\n\n");
             }
-            return txt + dadosSenha + "\n\n" + dateFormat.format(date) + "\n\n" + texto;
+
+            return texto.toString();
+
         } catch (SQLException e) {
-            return txt + dadosSenha + "\n\n"
-                    + "\n\n-----------------------------------\n\n";
+            return texto.append("\n\nERRO AO CONSULTAR DADOS.\n").toString();
         }
-    }//FIM.
+    }
+
+// Método auxiliar para centralizar texto com base em largura fixa
+    private String centralizarTexto(String texto, int largura) {
+        int espacos = (largura - texto.length()) / 2;
+        if (espacos < 0) {
+            espacos = 0;
+        }
+        return " ".repeat(espacos) + texto;
+    }
 
     //LISTAR SENHAS. 
     public ArrayList<Senha> daoListSenhas() {
