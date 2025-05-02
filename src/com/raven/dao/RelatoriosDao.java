@@ -13,7 +13,6 @@ import com.raven.controller.ControllerSenha;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import com.raven.model.Senha;
-import static com.sun.tools.javac.util.Constants.format;
 import java.awt.Desktop;
 
 import java.io.FileNotFoundException;
@@ -22,15 +21,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class RelatoriosDao extends ConexaoBD {
 
-    String PDF = "_PRATO_ALEIXO.pdf";
+    String PDF = "_PRATO_CHEIO_JESUS_ME_DEU.pdf";
     String nome = "";
     String refeicoes_ofertadas = "400";
 
@@ -142,7 +139,7 @@ public class RelatoriosDao extends ConexaoBD {
     public void escreverNoRELATORIOPDF(String texto) throws FileNotFoundException {
         // Constantes para reutilização
         final String DATE_FORMAT = "dd_MM_yyyy";
-        final String PDF_EXTENSION = "_ALEIXO.pdf"; //NOME DO DOCUMENTO
+        final String PDF_EXTENSION = "_PRATO_CHEIO_JESUS_ME_DEU.pdf"; //NOME DO DOCUMENTO
 
         // Formata a data e define o nome do arquivo
         String fileName = "RELATORIO_" + new SimpleDateFormat(DATE_FORMAT).format(new Date()) + PDF_EXTENSION;
@@ -249,7 +246,7 @@ public class RelatoriosDao extends ConexaoBD {
                         + "SOBRA DE REFEIÇÕES " + refeicoesDao.retornarTotalSOBRA() + "\n"//SOBRA DE REFEIÇÕES
                         + "Total de atendimento à Pessoas com Deficiência (PCD) " + rs.getInt(15) + "\n"// TOTAL DE PESSOAS COM DEFICIÊNCIA
                         + ocorrencias + "\n\n"
-                        + "EXPEDIENTE FECHADO POR: " + funcionarioDao.retornarUltimoLogin() + "\n DATA: " + dateFormat.format(date) + "\n\nPRATO CHEIO ALEIXO";
+                        + "EXPEDIENTE FECHADO POR: " + funcionarioDao.retornarUltimoLogin() + "\n DATA: " + dateFormat.format(date) + "\n\nPRATO CHEIO JESUS ME DEU";
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro na consulta" + e.getMessage());

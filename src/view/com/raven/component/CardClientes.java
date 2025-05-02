@@ -777,7 +777,7 @@ public final class CardClientes extends javax.swing.JPanel {
 
         cliIdadedep = Integer.parseInt(txtIdateDependente.getText());
 
-        if (cliIdadedep <= 17) {
+        if (cliIdadedep <= 50) {
             if (!nomeDependente.isEmpty()) {
                 dependentes.setId_titular(id);
                 dependentes.setNome_Completo(nomeDependente);
@@ -2653,16 +2653,12 @@ public final class CardClientes extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void ano_nascimentoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ano_nascimentoFocusGained
- 
-           
         
+
     }//GEN-LAST:event_ano_nascimentoFocusGained
 
-    
-    
-    
-@Override
-protected void paintChildren(Graphics grphcs) {
+    @Override
+    protected void paintChildren(Graphics grphcs) {
         Graphics2D g2 = (Graphics2D) grphcs;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         GradientPaint g = new GradientPaint(0, 0, Color.decode("#1CB5E0"), 0, getHeight(), Color.decode("#000046"));

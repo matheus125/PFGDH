@@ -136,18 +136,4 @@ public class Senha {
     public void setData_refeicao(String data_refeicao) {
         this.data_refeicao = data_refeicao;
     }
-    
-    public String toString() {
-    return "-------------------------------\n" +
-           "SENHA Nº: " + id + "\n" +
-           "NOME: " + cliente + "\n" +
-           "GÊNERO: " + Genero + "\n" +
-           "IDADE: " + Idade + "\n" +
-           "DEFICIÊNCIA: " + Deficiencia + "\n" +
-           "TIPO DE SENHA: " + tipoSenha + "\n" +
-           "STATUS: " + status_cliente + "\n" +
-           "DATA DA REFEIÇÃO: " + data_refeicao + "\n" +
-           "-------------------------------";
-}
-
 }
