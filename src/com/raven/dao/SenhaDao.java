@@ -21,6 +21,7 @@ public class SenhaDao extends ConexaoBD {
 
         String SalvarSenha = "call sp_salvar_senhas ("
                 + "'" + senha.getCliente() + "',"
+                + "'" + senha.getCpf() + "',"
                 + "'" + senha.getGenero() + "',"
                 + "'" + senha.getIdade() + "',"
                 + "'" + senha.getDeficiencia() + "',"
@@ -75,10 +76,10 @@ public class SenhaDao extends ConexaoBD {
     }//FIM.
 
     //VERIFICAR SE CLIENTE JÁ REALIZOU A COMPRAR DE SENHA.
-    public boolean checarSenhaCliente(String nome) {
+    public boolean checarSenhaCliente(String cpf) {
         this.getConectar();
         try {
-            this.executarSql("select * from tb_senhas where cliente='" + nome + "'");
+            this.executarSql("select * from tb_senhas where cpf ='" + cpf + "'");
             return this.getResultSet().next();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro" + e);

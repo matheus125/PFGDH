@@ -117,10 +117,11 @@ public final class CardVendas extends javax.swing.JPanel {
 
 //METODO PARA SALVAR SENHAS TITULADAS
     public void salvarSenhas() {
-        String nome, idade, genero, deficiente;
+        String nome, cpf, idade, genero, deficiente;
         int id_frequencia;
 
         nome = txtCliente.getText();
+        cpf = txtcpf.getText();
         id_frequencia = Integer.parseInt(txtid_cliente.getText());
         idade = txtidade1.getText();
         genero = txtgenero.getText();
@@ -128,6 +129,7 @@ public final class CardVendas extends javax.swing.JPanel {
 
         if (!nome.isEmpty()) {
             senha.setCliente(nome);
+            senha.setCpf(cpf);
             senha.setGenero(genero);
             senha.setIdade(idade);
             senha.setDeficiencia(deficiente);
@@ -173,7 +175,7 @@ public final class CardVendas extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Erro ao Salvar!");
         }
     }//FIM.
-    
+
     public void Buscar() {
         titular.setPesquisar(txtPesquisarNomeClientes.getText());
         titular = titularDao.buscarClientes(titular);
@@ -263,6 +265,7 @@ public final class CardVendas extends javax.swing.JPanel {
         txtid_cliente = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         table_cliente_Titular = new javax.swing.JTable();
+        txtcpf = new javax.swing.JTextField();
 
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Nome Completo:");
@@ -353,6 +356,14 @@ public final class CardVendas extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(table_cliente_Titular);
 
+        txtcpf.setEditable(false);
+        txtcpf.setDisabledTextColor(new java.awt.Color(187, 187, 187));
+        txtcpf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtcpfActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -368,8 +379,10 @@ public final class CardVendas extends javax.swing.JPanel {
                         .addGap(59, 59, 59)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtcpf, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(72, 72, 72)
                                 .addComponent(btnTitulada)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnGenerico))
@@ -416,7 +429,8 @@ public final class CardVendas extends javax.swing.JPanel {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(btnTitulada)
-                                .addComponent(btnGenerico))))
+                                .addComponent(btnGenerico)
+                                .addComponent(txtcpf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnBuscarClienteTitular, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -545,6 +559,7 @@ public final class CardVendas extends javax.swing.JPanel {
                 txtid_cliente.setText(con.getResultSet().getString("t.id"));
 
                 txtCliente.setText(con.getResultSet().getString("t.nome_Completo"));
+                txtcpf.setText(con.getResultSet().getString("t.cpf"));
                 nome_dependente = con.getResultSet().getString("d.nome_dependente");
 
                 txtidade1.setText(con.getResultSet().getString("t.idade_cliente"));
@@ -560,7 +575,7 @@ public final class CardVendas extends javax.swing.JPanel {
 //                idade_dependente = txtidade2.getText();
 
                 genero_dependente = con.getResultSet().getString("d.genero");
-                
+
                 status_cliente = con.getResultSet().getString("t.status_Cliente");
                 dependencia = con.getResultSet().getString("d.dependencia_cliente");
 
@@ -585,12 +600,16 @@ public final class CardVendas extends javax.swing.JPanel {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Erro no ao selecionar os dados" + ex);
         }
-        if (controllerSenha.controlVerificarSenhaCliente(table_cliente_Titular.getValueAt(table_cliente_Titular.getSelectedRow(), 0).toString())) {
+        if (controllerSenha.controlVerificarSenhaCliente(table_cliente_Titular.getValueAt(table_cliente_Titular.getSelectedRow(), 1).toString())) {
             JOptionPane.showMessageDialog(null, "Este cliente já comprou senha neste dia!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
             txtCliente.setText("");
             txtPesquisarNomeClientes.setText("");
         }
     }//GEN-LAST:event_table_cliente_TitularMouseClicked
+
+    private void txtcpfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcpfActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtcpfActionPerformed
 
     @Override
     protected void paintChildren(Graphics grphcs) {
@@ -616,6 +635,7 @@ public final class CardVendas extends javax.swing.JPanel {
     private javax.swing.JTextField txtCliente;
     private javax.swing.JLabel txtData_refeicao;
     private javax.swing.JTextField txtPesquisarNomeClientes;
+    private javax.swing.JTextField txtcpf;
     private javax.swing.JTextField txtdeficiencia;
     private javax.swing.JTextField txtgenero;
     private javax.swing.JLabel txtid_cliente;

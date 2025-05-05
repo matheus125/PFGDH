@@ -4,6 +4,7 @@ public class Senha {
 
     private int id;
     private String cliente;
+    private String cpf;
     private String Genero;
     private String Idade;
     private String Deficiencia;
@@ -14,9 +15,10 @@ public class Senha {
     public Senha() {
     }
 
-    public Senha(int id, String cliente, String Genero, String Idade, String Deficiencia, String tipoSenha, String status_cliente, String data_refeicao) {
+    public Senha(int id, String cliente, String cpf,String Genero, String Idade, String Deficiencia, String tipoSenha, String status_cliente, String data_refeicao) {
         this.id = id;
         this.cliente = cliente;
+        this.cpf = cpf;
         this.Genero = Genero;
         this.Idade = Idade;
         this.Deficiencia = Deficiencia;
@@ -53,6 +55,19 @@ public class Senha {
         this.cliente = cliente;
     }
 
+     /**
+     * @return the cpf
+     */
+    public String getCpf() {
+        return cpf;
+    }
+
+    /**
+     * @param cpf the cliente to set
+     */
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
     /**
      * @return the Genero
      */
