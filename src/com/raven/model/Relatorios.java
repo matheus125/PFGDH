@@ -19,7 +19,25 @@ public class Relatorios {
     private int _genericos;
     private int _deficientes;
     private int _totalDePessoasAtendidas;
-    
+
+    private int PESSOAS_SITUACAO_RUA_MASCULINO;
+    private int PESSOAS_SITUACAO_RUA_FEMININO;
+
+    public void setPESSOAS_SITUACAO_RUA_MASCULINO(int val) {
+        this.PESSOAS_SITUACAO_RUA_MASCULINO = val;
+    }
+
+    public void setPESSOAS_SITUACAO_RUA_FEMININO(int val) {
+        this.PESSOAS_SITUACAO_RUA_FEMININO = val;
+    }
+
+    public int getPESSOAS_SITUACAO_RUA_MASCULINO() {
+        return PESSOAS_SITUACAO_RUA_MASCULINO;
+    }
+
+    public int getPESSOAS_SITUACAO_RUA_FEMININO() {
+        return PESSOAS_SITUACAO_RUA_FEMININO;
+    }
 
     public Relatorios() {
     }
@@ -216,35 +234,7 @@ public class Relatorios {
         this._A_PARTIR_DE_60_ANOS_FEMININO_CPD = _A_PARTIR_DE_60_ANOS_FEMININO_CPD;
     }
 
-    /**
-     * @return the _PESSOAS_SITUACAO_RUA_MASCULINO
-     */
-    public int getPESSOAS_SITUACAO_RUA_MASCULINO() {
-        return _PESSOAS_SITUACAO_RUA_MASCULINO;
-    }
-
-    /**
-     * @param _PESSOAS_SITUACAO_RUA_MASCULINO the
-     * _PESSOAS_SITUACAO_RUA_MASCULINO to set
-     */
-    public void setPESSOAS_SITUACAO_RUA_MASCULINO(int _PESSOAS_SITUACAO_RUA_MASCULINO) {
-        this._PESSOAS_SITUACAO_RUA_MASCULINO = _PESSOAS_SITUACAO_RUA_MASCULINO;
-    }
-
-    /**
-     * @return the _PESSOAS_SITUACAO_RUA_FEMININO
-     */
-    public int getPESSOAS_SITUACAO_RUA_FEMININO() {
-        return _PESSOAS_SITUACAO_RUA_FEMININO;
-    }
-
-    /**
-     * @param _PESSOAS_SITUACAO_RUA_FEMININO the _PESSOAS_SITUACAO_RUA_FEMININO
-     * to set
-     */
-    public void setPESSOAS_SITUACAO_RUA_FEMININO(int _PESSOAS_SITUACAO_RUA_FEMININO) {
-        this._PESSOAS_SITUACAO_RUA_FEMININO = _PESSOAS_SITUACAO_RUA_FEMININO;
-    }
+ 
 
     /**
      * @return the _genericos

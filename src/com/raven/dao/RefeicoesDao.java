@@ -62,7 +62,7 @@ public class RefeicoesDao extends ConexaoBD {
                 total = this.getResultSet().getInt(2) + "";
             }
             
-            totalsobra = 400 - Integer.parseInt(total);
+            totalsobra = 300 - Integer.parseInt(total);
             total = Integer.toString(totalsobra);
 
             return total;

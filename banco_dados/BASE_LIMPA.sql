@@ -74,7 +74,6 @@ CREATE TABLE `tb_endereco` (
 -- Dumping data for table `tb_endereco`
 --
 
-
 --
 -- Table structure for table `tb_familia`
 --
@@ -83,20 +82,25 @@ DROP TABLE IF EXISTS `tb_familia`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tb_familia` (
-  `id_familia` int NOT NULL AUTO_INCREMENT,
-  `id_titular` int DEFAULT NULL,
-  `id_dependente` int DEFAULT NULL,
-  PRIMARY KEY (`id_familia`),
-  KEY `id_titular` (`id_titular`),
-  KEY `id_dependente` (`id_dependente`),
-  CONSTRAINT `tb_familia_ibfk_1` FOREIGN KEY (`id_titular`) REFERENCES `tb_titular` (`id`),
-  CONSTRAINT `tb_familia_ibfk_2` FOREIGN KEY (`id_dependente`) REFERENCES `tb_dependentes` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `id_titular` int NOT NULL,
+  `nome_familia` varchar(150) DEFAULT NULL,
+  `grupo_familiar` varchar(100) DEFAULT NULL,
+  `data_criacao` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `tb_familia_ibfk_1` (`id_titular`),
+  CONSTRAINT `tb_familia_ibfk_1` FOREIGN KEY (`id_titular`) REFERENCES `tb_titular` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `tb_familia`
 --
+
+LOCK TABLES `tb_familia` WRITE;
+/*!40000 ALTER TABLE `tb_familia` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tb_familia` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `tb_frequencia_diaria`
@@ -113,13 +117,12 @@ CREATE TABLE `tb_frequencia_diaria` (
   `status` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `cliente_id` (`nome`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `tb_frequencia_diaria`
 --
-
 
 --
 -- Table structure for table `tb_frequencia_geral`
@@ -136,13 +139,12 @@ CREATE TABLE `tb_frequencia_geral` (
   `status` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `cliente_id` (`nome`)
-) ENGINE=InnoDB AUTO_INCREMENT=607 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=679 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `tb_frequencia_geral`
 --
-
 
 
 --
@@ -169,7 +171,7 @@ CREATE TABLE `tb_funcionario` (
 
 LOCK TABLES `tb_funcionario` WRITE;
 /*!40000 ALTER TABLE `tb_funcionario` DISABLE KEYS */;
-INSERT INTO `tb_funcionario` VALUES (1,'Administrador','ASSESSOR','(92) 98201-0100','2024-10-30 02:27:17',NULL);
+INSERT INTO `tb_funcionario` VALUES (1,'Administrador','ASSESSOR','(92) 98201-0100','2024-10-30 02:27:17',NULL),(3,'Marcos Mota','Gerente','(92) 92929-2929','2024-12-27 01:05:22',NULL);
 /*!40000 ALTER TABLE `tb_funcionario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -187,13 +189,12 @@ CREATE TABLE `tb_refeicoes_vendidas` (
   `registration_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `registration_date_update` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=141 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=150 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `tb_refeicoes_vendidas`
 --
-
 
 --
 -- Table structure for table `tb_relatorios`
@@ -229,7 +230,6 @@ CREATE TABLE `tb_relatorios` (
 -- Dumping data for table `tb_relatorios`
 --
 
-
 --
 -- Table structure for table `tb_resumodia`
 --
@@ -247,6 +247,10 @@ CREATE TABLE `tb_resumodia` (
 -- Dumping data for table `tb_resumodia`
 --
 
+LOCK TABLES `tb_resumodia` WRITE;
+/*!40000 ALTER TABLE `tb_resumodia` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tb_resumodia` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `tb_senhas`
@@ -258,6 +262,7 @@ DROP TABLE IF EXISTS `tb_senhas`;
 CREATE TABLE `tb_senhas` (
   `id` int NOT NULL AUTO_INCREMENT,
   `cliente` varchar(100) DEFAULT NULL,
+  `cpf` varchar(45) DEFAULT NULL,
   `Idade` varchar(20) DEFAULT NULL,
   `Genero` varchar(45) DEFAULT NULL,
   `Deficiente` varchar(45) DEFAULT NULL,
@@ -267,13 +272,11 @@ CREATE TABLE `tb_senhas` (
   `registration_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `registration_date_update` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `tb_senhas`
---
-
 
 
 --
@@ -312,6 +315,10 @@ CREATE TABLE `tb_socio_economico` (
 -- Dumping data for table `tb_socio_economico`
 --
 
+LOCK TABLES `tb_socio_economico` WRITE;
+/*!40000 ALTER TABLE `tb_socio_economico` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tb_socio_economico` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `tb_socio_economico_saude`
@@ -404,7 +411,7 @@ CREATE TABLE `tb_user` (
 
 LOCK TABLES `tb_user` WRITE;
 /*!40000 ALTER TABLE `tb_user` DISABLE KEYS */;
-INSERT INTO `tb_user` VALUES (1,1,'000.000.000-00','123','Administrador','2024-10-30 02:27:17',NULL);
+INSERT INTO `tb_user` VALUES (1,1,'000.000.000-00','123','Administrador','2024-10-30 02:27:17',NULL),(3,3,'032.930.432-16','123','Administrador','2024-12-27 01:05:22',NULL);
 /*!40000 ALTER TABLE `tb_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -425,13 +432,12 @@ CREATE TABLE `tb_userlogs` (
   PRIMARY KEY (`id`),
   KEY `id_user` (`id_user`),
   CONSTRAINT `tb_userlogs_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `tb_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=349 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=400 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `tb_userlogs`
 --
-
 --
 -- Dumping events for database 'dev05'
 --
@@ -633,12 +639,25 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_salvar_dependentes`(pidtitular int,pnome_dependente varchar (100),prg varchar (10),pcpf varchar (15),pIdade int,pgenero varchar (10),pdependencia_cliente varchar (50) )
-BEGIN DECLARE vid_dependente int; INSERT INTO tb_dependentes (id_titular, nome_dependente, rg, cpf, Idade, genero, dependencia_cliente) 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_salvar_dependentes`(
+pidtitular int,
+pnome_dependente varchar (100),
+prg varchar (10),
+pcpf varchar (15),
+pIdade int,
+pgenero varchar (10),
+pdependencia_cliente varchar (50),
+pnome_familia varchar(150),
+pgrupo_familiar varchar(100)
+)
+BEGIN DECLARE vid_dependente int; 
+INSERT INTO tb_dependentes (id_titular, nome_dependente, rg, cpf, Idade, genero, dependencia_cliente) 
     VALUES (pidtitular, pnome_dependente, prg, pcpf, pIdade, pgenero, pdependencia_cliente);
     SET vid_dependente = last_insert_id();
     
-    INSERT INTO tb_familia (id_titular, id_dependente) values (pidtitular,vid_dependente); END ;;
+    INSERT INTO tb_familia (id_titular, nome_familia, grupo_familiar) values (pidtitular,pnome_familia, pgrupo_familiar); 
+  
+    END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -695,14 +714,15 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_salvar_senhas`(
 pCliente varchar (100),
+pCpf varchar (45),
 pGenero varchar (45),
 pIdade varchar (45),
 pDeficiente varchar (45),
 pstatus_cliente varchar (45),
 pdata_refeicao varchar (10) 
 )
-BEGIN INSERT INTO tb_senhas (cliente, Genero, Idade, Deficiente, tipoSenha, status_cliente, data_refeicao) 
-    VALUES (pCliente, pGenero, pIdade, pDeficiente,"NORMAL", pstatus_cliente, pdata_refeicao); END ;;
+BEGIN INSERT INTO tb_senhas (cliente, cpf,Genero, Idade, Deficiente, tipoSenha, status_cliente, data_refeicao) 
+    VALUES (pCliente, pCpf, pGenero, pIdade, pDeficiente,"NORMAL", pstatus_cliente, pdata_refeicao); END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -913,4 +933,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-25 13:53:08
+-- Dump completed on 2025-05-07 12:18:12

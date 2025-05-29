@@ -125,7 +125,7 @@ public class SenhaDao extends ConexaoBD {
             texto.append(senha).append("\n");
             texto.append("NOME: ").append(nomeCliente).append("\n\n");
             texto.append(dateFormat.format(dataAtual)).append("\n\n");
-            texto.append("PRATO CHEIO JESUS ME DEU").append("\n\n");
+            texto.append("PRATO CHEIO NHAMUNDÁ").append("\n\n");
             texto.append(separador);
         } else {
             texto.append("NÃO ENCONTRADO\n\n");

@@ -289,12 +289,12 @@ public class CardExpediente extends javax.swing.JPanel {
         String resultado = JOptionPane.showInputDialog(null, "Insira uma senha de Administrador para encerrar o expediente.");
 
         int total;
-        
+
         //VERIFICAÇÃO DE SENHA DE ADMINISTRADOR PARA FECHAR O SISTEMA.
         if (controllerSenha.controlChecarSenha(resultado) == 1) {
             //RECEBENDO TOTAL DE REFEIÇÕES SERVIDAS E JOGANDO O VALOR PARA UMA VARIÁVEL LOCAL RECEBER O VALOR.
             String totalServido = JOptionPane.showInputDialog(null, "Insira o total de refeições servidas.");
-            
+
             //CAMPOS PARA GERAR RELATÓRIO
             String ocorr
                     = "\nCardápio: " + txtCardapio.getText().toUpperCase()
@@ -302,7 +302,6 @@ public class CardExpediente extends javax.swing.JPanel {
                     + "\nTérmino das senhas: " + txt_terminoSenhas.getText().toUpperCase()
                     + "\nTérmino da distribuição: " + txt_terminoDistribuicao.getText().toUpperCase()
                     + "\nNome:" + nome.toUpperCase()
-                   
                     + "\nOcorrências: " + txt_ocorrencia.getText().toUpperCase();
             //PEGANDO VALOR DA VARIÁVEL "totalServido", E PASSANDO COMO PARÂMETRO PARA SALVAR NA TABELA "tb_refeicoes_vendidas".
             refeicoes.setTotal_servido(Integer.parseInt(totalServido));
@@ -328,14 +327,13 @@ public class CardExpediente extends javax.swing.JPanel {
                 limparCampos();
                 gerarPDF();
 
-                try {
-                    relatoriosDao.escreverNoRELATORIOPDF(relatoriosDao.lerRelatorios(dateFormat.format(date), ocorr));
-                    controllerSenha.controlLimparSenhas();
-                    controllerFrequencia.controllimparFrequencia();
-                    controllerClientes.controlLimparResumodia();
-                } catch (FileNotFoundException err) {
-                    err.printStackTrace();
-                }
+                //                    relatoriosDao.escreverNoRELATORIOPDF(relatoriosDao.gerarRelatorioPDF(dateFormat.format(date), ocorr));
+                
+                String texto = relatoriosDao.gerarTextoRelatorio(dateFormat.format(date), ocorr);
+                relatoriosDao.escreverNoRELATORIOPDF(texto);
+                controllerSenha.controlLimparSenhas();
+                controllerFrequencia.controllimparFrequencia();
+                controllerClientes.controlLimparResumodia();
 
             } else {
                 JOptionPane.showMessageDialog(null, "Você já encerrou o expediente hoje!", "Mensagem", JOptionPane.PLAIN_MESSAGE);

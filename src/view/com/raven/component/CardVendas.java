@@ -33,7 +33,7 @@ import view.com.raven.swing.ScrollBar;
 
 public final class CardVendas extends javax.swing.JPanel {
 
-    int id_clientes, id_frequencia, contador = 400;
+    int id_clientes, id_frequencia, contador = 300;
 
     String idade_dependente, genero_dependente, data2, genero, deficiencia, idade, nome_dependente, dependencia, status_cliente;
 
@@ -58,6 +58,7 @@ public final class CardVendas extends javax.swing.JPanel {
         txtData_refeicao.setVisible(false);
         txtgenero.setVisible(false);
         txtdeficiencia.setVisible(false);
+        txtcpf.setVisible(false);
         setOpaque(false);
         tabela_cliente_titular("select t.id, t.nome_Completo, t.cpf, t.rg, t.idade_cliente, t.genero_cliente, t.status_Cliente, d.nome_dependente, d.Idade, d.genero, d.dependencia_cliente from tb_titular t left join tb_dependentes d USING (id) order by t.nome_Completo;");
 
@@ -374,27 +375,6 @@ public final class CardVendas extends javax.swing.JPanel {
                         .addContainerGap()
                         .addComponent(txtData_refeicao, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(txtid_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(59, 59, 59)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtcpf, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(72, 72, 72)
-                                .addComponent(btnTitulada)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnGenerico))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtPesquisarNomeClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnBuscarClienteTitular, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnAtualizar)))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(70, 70, 70)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(23, 23, 23)
@@ -411,6 +391,29 @@ public final class CardVendas extends javax.swing.JPanel {
                                 .addGap(64, 64, 64)
                                 .addComponent(txtdeficiencia, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(210, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(txtid_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(59, 59, 59)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPesquisarNomeClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnTitulada)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnGenerico)))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnBuscarClienteTitular, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAtualizar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(txtcpf, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(222, 222, 222))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -429,10 +432,11 @@ public final class CardVendas extends javax.swing.JPanel {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(btnTitulada)
-                                .addComponent(btnGenerico)
-                                .addComponent(txtcpf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(btnGenerico))))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnBuscarClienteTitular, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnBuscarClienteTitular, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtcpf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAtualizar)))
                 .addGap(18, 18, 18)
@@ -477,6 +481,7 @@ public final class CardVendas extends javax.swing.JPanel {
         } else {
             JOptionPane.showMessageDialog(null, "Cancelado!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
             txtCliente.setText("");
+            txtcpf.setText("");
         }
 
         String nome = txtCliente.getText();
@@ -557,7 +562,7 @@ public final class CardVendas extends javax.swing.JPanel {
         try {
             while (con.getResultSet().next()) {
                 txtid_cliente.setText(con.getResultSet().getString("t.id"));
-
+                
                 txtCliente.setText(con.getResultSet().getString("t.nome_Completo"));
                 txtcpf.setText(con.getResultSet().getString("t.cpf"));
                 nome_dependente = con.getResultSet().getString("d.nome_dependente");
@@ -603,6 +608,7 @@ public final class CardVendas extends javax.swing.JPanel {
         if (controllerSenha.controlVerificarSenhaCliente(table_cliente_Titular.getValueAt(table_cliente_Titular.getSelectedRow(), 1).toString())) {
             JOptionPane.showMessageDialog(null, "Este cliente já comprou senha neste dia!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
             txtCliente.setText("");
+            txtcpf.setText("");
             txtPesquisarNomeClientes.setText("");
         }
     }//GEN-LAST:event_table_cliente_TitularMouseClicked
