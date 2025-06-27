@@ -15,24 +15,23 @@ import java.util.Date;
 import javax.swing.JOptionPane;
 
 public class SenhaDao extends ConexaoBD {
-    
-    
-    String texto = "PRATO CHEIO ALEIXO";
 
     //SALVAR SENHAS TITULADAS AOS CLIENTES OU DEPENDENTES.
     public boolean daoSalvarSenha(Senha senha) {
 
         String SalvarSenha = "call sp_salvar_senhas ("
                 + "'" + senha.getCliente() + "',"
+                + "'" + senha.getCpf() + "',"
                 + "'" + senha.getGenero() + "',"
                 + "'" + senha.getIdade() + "',"
-                + "'" + senha.getDeficiencia()+ "',"
+                + "'" + senha.getDeficiencia() + "',"
+                + "'" + senha.getStatus_cliente() + "',"
                 + "'" + senha.getData_refeicao() + "'"
                 + ")";
         try {
             this.getConectar();
             this.executarSql(SalvarSenha);
-            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
+//            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
             return true;
         } catch (Exception erro) {
             return false;
@@ -77,10 +76,10 @@ public class SenhaDao extends ConexaoBD {
     }//FIM.
 
     //VERIFICAR SE CLIENTE JÁ REALIZOU A COMPRAR DE SENHA.
-    public boolean checarSenhaCliente(String nome) {
+    public boolean checarSenhaCliente(String cpf) {
         this.getConectar();
         try {
-            this.executarSql("select * from tb_senhas where cliente='" + nome + "'");
+            this.executarSql("select * from tb_senhas where cpf ='" + cpf + "'");
             return this.getResultSet().next();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro" + e);
@@ -96,34 +95,49 @@ public class SenhaDao extends ConexaoBD {
 
         try {
             Files.write(caminho, textpEmByte);
-            //java.awt.Desktop.getDesktop().open(file);
+//            java.awt.Desktop.getDesktop().open(file);
             java.awt.Desktop.getDesktop().print(file);
         } catch (IOException e) {
 
         }
     }//FIM.
 
-    //RECUPERA A SENHAS E IMPRIME NA IMPRESSORA.
     public String recuperarSenha() {
-        this.getConectar();
-        String dadosSenha = "";
+    this.getConectar();
+    String senha = "";
+    String nomeCliente = "";
+    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    Date dataAtual = new Date();
+    
+    String separador = "-----------------------------------\n";
 
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = new Date();
-        
-        String txt = "GOVERNO DO ESTADO DO AMAZONAS\n\n"
-                + "           SENHA: ";
-        try {
-            this.executarSql("select id from tb_senhas order by id desc limit 1");
-            while (this.getResultSet().next()) {
-                dadosSenha = ("" + dadosSenha + "" + (this.getResultSet().getInt(1)) + "  ");
-            }
-            return txt + dadosSenha + "\n\n" + dateFormat.format(date) + "\n\n" + texto;
-        } catch (SQLException e) {
-            return txt + dadosSenha + "\n\n"
-                    + "\n\n-----------------------------------\n\n";
+    StringBuilder texto = new StringBuilder();
+    texto.append("GOVERNO DO ESTADO DO AMAZONAS\n\n");
+    texto.append("           SENHA: ");
+
+    try {
+        this.executarSql("SELECT id, cliente FROM tb_senhas ORDER BY id DESC LIMIT 1");
+
+        if (this.getResultSet().next()) {
+            senha = String.valueOf(this.getResultSet().getInt("id"));
+            nomeCliente = this.getResultSet().getString("cliente");
+
+            texto.append(senha).append("\n");
+            texto.append("NOME: ").append(nomeCliente).append("\n");
+            texto.append(dateFormat.format(dataAtual)).append("\n");
+            texto.append("PRATO CHEIO CENTRO").append("\n");
+//            texto.append(separador);
+        } else {
+            texto.append("NÃO ENCONTRADO\n\n");
         }
-    }//FIM.
+
+        return texto.toString();
+
+    } catch (SQLException e) {
+        return texto.append("\n\nERRO AO CONSULTAR DADOS.\n").toString();
+    }
+}
+
 
     //LISTAR SENHAS. 
     public ArrayList<Senha> daoListSenhas() {

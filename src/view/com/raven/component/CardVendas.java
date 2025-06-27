@@ -1,15 +1,11 @@
 package view.com.raven.component;
 
-import java.sql.*;
 import com.raven.banco.ConexaoBD;
-import com.raven.controller.ControllerDependentes;
-import com.raven.controller.ControllerRelatorios;
 import com.raven.controller.ControllerSenha;
 import com.raven.dao.FrequenciaDAO;
 import com.raven.dao.SenhaDao;
 import com.raven.dao.TitularDao;
 import com.raven.model.Frequencia;
-import com.raven.model.Relatorios;
 import com.raven.model.Senha;
 import com.raven.model.Titular;
 import com.raven.tabelas.TabelaUniversal;
@@ -18,25 +14,14 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -44,9 +29,9 @@ import view.com.raven.swing.ScrollBar;
 
 public final class CardVendas extends javax.swing.JPanel {
 
-    int id_clientes, id_frequencia, contador = 400;
+    int id_clientes, id_frequencia, contador = 600;
 
-    String idade_dependente, genero_dependente, data2, genero, deficiencia, idade, nome_dependente, dependencia;
+    String idade_dependente, genero_dependente, data2, genero, deficiencia, idade, nome_dependente, dependencia, status_cliente;
 
     //CHAMANDO MINHA CLASSE DE CONEXÃO.
     ConexaoBD con = new ConexaoBD();
@@ -69,6 +54,7 @@ public final class CardVendas extends javax.swing.JPanel {
         txtData_refeicao.setVisible(false);
         txtgenero.setVisible(false);
         txtdeficiencia.setVisible(false);
+        txtcpf.setVisible(false);
         setOpaque(false);
         tabela_cliente_titular("select t.id, t.nome_Completo, t.cpf, t.rg, t.idade_cliente, t.genero_cliente, t.status_Cliente, d.nome_dependente, d.Idade, d.genero, d.dependencia_cliente from tb_titular t left join tb_dependentes d USING (id) order by t.nome_Completo;");
 
@@ -128,10 +114,11 @@ public final class CardVendas extends javax.swing.JPanel {
 
 //METODO PARA SALVAR SENHAS TITULADAS
     public void salvarSenhas() {
-        String nome, idade, genero, deficiente;
+        String nome, cpf, idade, genero, deficiente;
         int id_frequencia;
 
         nome = txtCliente.getText();
+        cpf = txtcpf.getText();
         id_frequencia = Integer.parseInt(txtid_cliente.getText());
         idade = txtidade1.getText();
         genero = txtgenero.getText();
@@ -139,10 +126,11 @@ public final class CardVendas extends javax.swing.JPanel {
 
         if (!nome.isEmpty()) {
             senha.setCliente(nome);
+            senha.setCpf(cpf);
             senha.setGenero(genero);
             senha.setIdade(idade);
             senha.setDeficiencia(deficiente);
-
+            senha.setStatus_cliente(status_cliente);
             senha.setData_refeicao(data2);
 
             System.out.println(senha);
@@ -177,14 +165,14 @@ public final class CardVendas extends javax.swing.JPanel {
 
         boolean resultado = controllerSenha.controlSaveSenhasGenericas(senha);
         if (resultado == true) {
-            JOptionPane.showMessageDialog(this, "Salvo com sucesso!");
+//            JOptionPane.showMessageDialog(this, "Salvo com sucesso!");
             senhaDao.escreverNoTXT(senhaDao.recuperarSenha());
             ultimaSenha.setText("Última senha: " + senhaDao.retornarUltimaSenha());
         } else {
             JOptionPane.showMessageDialog(this, "Erro ao Salvar!");
         }
     }//FIM.
-    
+
     public void Buscar() {
         titular.setPesquisar(txtPesquisarNomeClientes.getText());
         titular = titularDao.buscarClientes(titular);
@@ -274,6 +262,7 @@ public final class CardVendas extends javax.swing.JPanel {
         txtid_cliente = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         table_cliente_Titular = new javax.swing.JTable();
+        txtcpf = new javax.swing.JTextField();
 
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Nome Completo:");
@@ -364,6 +353,14 @@ public final class CardVendas extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(table_cliente_Titular);
 
+        txtcpf.setEditable(false);
+        txtcpf.setDisabledTextColor(new java.awt.Color(187, 187, 187));
+        txtcpf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtcpfActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -373,25 +370,6 @@ public final class CardVendas extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(txtData_refeicao, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(txtid_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(59, 59, 59)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnTitulada)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnGenerico))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtPesquisarNomeClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnBuscarClienteTitular, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnAtualizar)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(70, 70, 70)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -409,6 +387,29 @@ public final class CardVendas extends javax.swing.JPanel {
                                 .addGap(64, 64, 64)
                                 .addComponent(txtdeficiencia, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(210, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(txtid_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(59, 59, 59)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPesquisarNomeClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnTitulada)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnGenerico)))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnBuscarClienteTitular, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAtualizar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(txtcpf, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(222, 222, 222))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -429,7 +430,9 @@ public final class CardVendas extends javax.swing.JPanel {
                                 .addComponent(btnTitulada)
                                 .addComponent(btnGenerico))))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnBuscarClienteTitular, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnBuscarClienteTitular, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtcpf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAtualizar)))
                 .addGap(18, 18, 18)
@@ -474,6 +477,7 @@ public final class CardVendas extends javax.swing.JPanel {
         } else {
             JOptionPane.showMessageDialog(null, "Cancelado!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
             txtCliente.setText("");
+            txtcpf.setText("");
         }
 
         String nome = txtCliente.getText();
@@ -525,7 +529,7 @@ public final class CardVendas extends javax.swing.JPanel {
     private void table_cliente_DependenteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_cliente_DependenteMouseClicked
         String nome = "" + table_cliente_Dependente.getValueAt(table_cliente_Dependente.getSelectedRow(), 0);
         txtCliente.setText(nome);
-
+        txtcpf.setText("");
         int index = table_cliente_Dependente.getSelectedRow();
         TableModel model = table_cliente_Dependente.getModel();
         int value1 = Integer.parseInt(model.getValueAt(index, 1).toString());
@@ -548,7 +552,7 @@ public final class CardVendas extends javax.swing.JPanel {
     private void table_cliente_TitularMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_cliente_TitularMouseClicked
         String nome = "" + table_cliente_Titular.getValueAt(table_cliente_Titular.getSelectedRow(), 0);
         con.getConectar();
-        con.executarSql("select t.id, t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, s.deficiencia, d.nome_dependente, d.Idade, d.genero, d.dependencia_cliente from tb_titular t left join tb_dependentes d on d.id_titular = t.id left join tb_socio_economico_saude s on s.id_titular = t.id where t.nome_Completo ='" + nome + "'");
+        con.executarSql("select t.id, t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, s.deficiencia, t.status_Cliente, d.nome_dependente, d.Idade, d.genero, d.dependencia_cliente from tb_titular t left join tb_dependentes d on d.id_titular = t.id left join tb_socio_economico_saude s on s.id_titular = t.id where t.nome_Completo ='" + nome + "'");
         DefaultTableModel modelo = (DefaultTableModel) table_cliente_Dependente.getModel();
         modelo.setNumRows(0);
         try {
@@ -556,6 +560,7 @@ public final class CardVendas extends javax.swing.JPanel {
                 txtid_cliente.setText(con.getResultSet().getString("t.id"));
 
                 txtCliente.setText(con.getResultSet().getString("t.nome_Completo"));
+                txtcpf.setText(con.getResultSet().getString("t.cpf"));
                 nome_dependente = con.getResultSet().getString("d.nome_dependente");
 
                 txtidade1.setText(con.getResultSet().getString("t.idade_cliente"));
@@ -571,6 +576,8 @@ public final class CardVendas extends javax.swing.JPanel {
 //                idade_dependente = txtidade2.getText();
 
                 genero_dependente = con.getResultSet().getString("d.genero");
+
+                status_cliente = con.getResultSet().getString("t.status_Cliente");
                 dependencia = con.getResultSet().getString("d.dependencia_cliente");
 
                 table_cliente_Dependente_principal.setVerticalScrollBar(new ScrollBar());
@@ -594,12 +601,17 @@ public final class CardVendas extends javax.swing.JPanel {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Erro no ao selecionar os dados" + ex);
         }
-        if (controllerSenha.controlVerificarSenhaCliente(table_cliente_Titular.getValueAt(table_cliente_Titular.getSelectedRow(), 0).toString())) {
+        if (controllerSenha.controlVerificarSenhaCliente(table_cliente_Titular.getValueAt(table_cliente_Titular.getSelectedRow(), 1).toString())) {
             JOptionPane.showMessageDialog(null, "Este cliente já comprou senha neste dia!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
             txtCliente.setText("");
+            txtcpf.setText("");
             txtPesquisarNomeClientes.setText("");
         }
     }//GEN-LAST:event_table_cliente_TitularMouseClicked
+
+    private void txtcpfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcpfActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtcpfActionPerformed
 
     @Override
     protected void paintChildren(Graphics grphcs) {
@@ -625,6 +637,7 @@ public final class CardVendas extends javax.swing.JPanel {
     private javax.swing.JTextField txtCliente;
     private javax.swing.JLabel txtData_refeicao;
     private javax.swing.JTextField txtPesquisarNomeClientes;
+    private javax.swing.JTextField txtcpf;
     private javax.swing.JTextField txtdeficiencia;
     private javax.swing.JTextField txtgenero;
     private javax.swing.JLabel txtid_cliente;

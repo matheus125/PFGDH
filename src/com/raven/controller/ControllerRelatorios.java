@@ -20,8 +20,12 @@ public class ControllerRelatorios {
         this.relatoriosDao.escreverNoRELATORIOPDF(texto);
     }
 
-    public String controlLerRelatorios(String data, String ocorrencias) {
-        return this.relatoriosDao.lerRelatorios(data, ocorrencias);
+//    public void controlLerRelatorios(String data, String ocorrencias) {
+//        this.relatoriosDao.gerarRelatorioPDF(data, ocorrencias);
+//    }
+    public void gerarRelatorio(String data, String ocorrencias) {
+        String texto = relatoriosDao.gerarTextoRelatorio(data, ocorrencias);
+        relatoriosDao.escreverNoRELATORIOPDF(texto);
     }
 
 }

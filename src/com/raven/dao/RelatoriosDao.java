@@ -13,251 +13,108 @@ import com.raven.controller.ControllerSenha;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import com.raven.model.Senha;
-import static com.sun.tools.javac.util.Constants.format;
 import java.awt.Desktop;
 
 import java.io.FileNotFoundException;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 public class RelatoriosDao extends ConexaoBD {
 
-    String PDF = "_PRATO_ALEIXO.pdf";
     String nome = "";
-    String refeicoes_ofertadas = "400";
+    String refeicoes_ofertadas = "600";
 
     ControllerSenha controllerSenha = new ControllerSenha();
     RefeicoesDao refeicoesDao = new RefeicoesDao();
     FuncionarioDao funcionarioDao = new FuncionarioDao();
     ClientesDao clientesDao = new ClientesDao();
 
-//    public Relatorios lerParaOBl(Relatorios relatorio) {
-//        // Uso de um mapa para armazenar contadores dinamicamente
-//        Map<String, Integer> contadores = new HashMap<>();
-//        String[] chaves = {
-//            "contador1", "contador2", "contador3", "contador4", "contador5",
-//            "contador6", "contador7", "contador8", "contador9", "contador10",
-//            "contador11", "contador12", "contador13", "contador14", "contador15",
-//            "contador16", "contador17", "contador18", "contador19", "contador20",
-//            "contador21", "contador22", "contador23", "contador24", "contador25"
-//        };
-//
-//        // Inicializa os contadores no mapa
-//        for (String chave : chaves) {
-//            contadores.put(chave, 0);
-//        }
-//
-//        this.getConectar();
-//        try {
-//            this.executarSql("select * from tb_senhas");
-//
-//            while (this.getResultSet().next()) {
-//                contadores.put("contador18", contadores.get("contador18") + 1); // Incrementa o total de pessoas atendidas
-//
-//                String idadeString = this.getResultSet().getString(3);
-//                String genero = this.getResultSet().getString(4);
-//                String respostaSim = this.getResultSet().getString(5);
-//                String valorColuna = this.getResultSet().getString(3);
-//
-//                try {
-//                    int idade = Integer.parseInt(idadeString);
-//
-//                    // Identifica a faixa etária e o gênero, atualizando os contadores
-//                    if (idade >= 3 && idade < 17) {
-//                        if ("Masculino".equalsIgnoreCase(genero)) {
-//                            contadores.put("contador1", contadores.get("contador1") + 1);
-//                            if ("SIM".equalsIgnoreCase(respostaSim)) {
-//                                contadores.put("contador16", contadores.get("contador16") + 1);
-//                            }
-//                        } else if ("Feminino".equalsIgnoreCase(genero)) {
-//                            contadores.put("contador3", contadores.get("contador3") + 1);
-//                            if ("SIM".equalsIgnoreCase(respostaSim)) {
-//                                contadores.put("contador19", contadores.get("contador19") + 1);
-//                            }
-//                        }
-//                    } else if (idade >= 18 && idade < 59) {
-//                        if ("Masculino".equalsIgnoreCase(genero)) {
-//                            contadores.put("contador5", contadores.get("contador5") + 1);
-//                            if ("SIM".equalsIgnoreCase(respostaSim)) {
-//                                contadores.put("contador20", contadores.get("contador20") + 1);
-//                            }
-//                        } else if ("Feminino".equalsIgnoreCase(genero)) {
-//                            contadores.put("contador7", contadores.get("contador7") + 1);
-//                            if ("SIM".equalsIgnoreCase(respostaSim)) {
-//                                contadores.put("contador21", contadores.get("contador21") + 1);
-//                            }
-//                        }
-//                    } else if (idade >= 60) {
-//                        if ("Masculino".equalsIgnoreCase(genero)) {
-//                            contadores.put("contador9", contadores.get("contador9") + 1);
-//                            if ("SIM".equalsIgnoreCase(respostaSim)) {
-//                                contadores.put("contador22", contadores.get("contador22") + 1);
-//                            }
-//                            contadores.put("contador24", contadores.get("contador24") + 1);
-//                        } else if ("Feminino".equalsIgnoreCase(genero)) {
-//                            contadores.put("contador11", contadores.get("contador11") + 1);
-//                            if ("SIM".equalsIgnoreCase(respostaSim)) {
-//                                contadores.put("contador23", contadores.get("contador23") + 1);
-//                            }
-//                            contadores.put("contador25", contadores.get("contador25") + 1);
-//                        }
-//                    } else if ("1".equalsIgnoreCase(valorColuna)) {
-//                        contadores.put("contador12", contadores.get("contador12") + 1);
-//                    }
-//                } catch (NumberFormatException e) {
-//                    System.err.println("Erro ao converter idade para inteiro: " + idadeString);
-//                    contadores.put("contador12", contadores.get("contador12") + 1); // Incrementa o genérico em caso de erro
-//                }
-//            }
-//
-//            // Calcula o total de deficientes
-//            contadores.put("contador17", contadores.get("contador16") + contadores.get("contador19")
-//                    + contadores.get("contador20") + contadores.get("contador21")
-//                    + contadores.get("contador22") + contadores.get("contador23"));
-//
-//            // Atualiza o objeto Relatorios
-//            relatorio.set3_17_ANOS_MASCULINO(contadores.get("contador1"));
-//            relatorio.set3_17_ANOS_MASCULINO_CPD(contadores.get("contador16"));
-//            relatorio.set3_17_ANOS_FEMININO(contadores.get("contador3"));
-//            relatorio.set3_17_ANOS_FEMININO_CPD(contadores.get("contador19"));
-//            relatorio.set18_59_ANOS_MASCULINO(contadores.get("contador5"));
-//            relatorio.set18_59_ANOS_MASCULINO_CPD(contadores.get("contador20"));
-//            relatorio.set18_59_ANOS_FEMININO(contadores.get("contador7"));
-//            relatorio.set18_59_ANOS_FEMININO_CPD(contadores.get("contador21"));
-//            relatorio.setA_PARTIR_DE_60_ANOS_MASCULINO(contadores.get("contador9"));
-//            relatorio.setA_PARTIR_DE_60_ANOS_MASCULINO_CPD(contadores.get("contador22"));
-//            relatorio.setA_PARTIR_DE_60_ANOS_FEMININO(contadores.get("contador11"));
-//            relatorio.setA_PARTIR_DE_60_ANOS_FEMININO_CPD(contadores.get("contador23"));
-//            relatorio.setPESSOAS_SITUACAO_RUA_MASCULINO(contadores.get("contador24"));
-//            relatorio.setPESSOAS_SITUACAO_RUA_FEMININO(contadores.get("contador25"));
-//            relatorio.setGenericos(contadores.get("contador12"));
-//            relatorio.setTotalDePessoasAtendidas(contadores.get("contador18"));
-//            relatorio.setDeficientes(contadores.get("contador17"));
-//
-//            return relatorio;
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return relatorio;
-//        }
-//    }
-    public Relatorios lerParaOBl(Relatorios relatorio) {
-        // Uso de um mapa para armazenar contadores dinamicamente
-        Map<String, Integer> contadores = new HashMap<>();
-        String[] chaves = {
-            "contador1", "contador2", "contador3", "contador4", "contador5",
-            "contador6", "contador7", "contador8", "contador9", "contador10",
-            "contador11", "contador12", "contador13", "contador14", "contador15",
-            "contador16", "contador17", "contador18", "contador19", "contador20",
-            "contador21", "contador22", "contador23", "contador24", "contador25"
-        };
 
-        // Inicializa os contadores no mapa
-        for (String chave : chaves) {
-            contadores.put(chave, 0);
-        }
+    public Relatorios lerParaOBl(Relatorios relatorio) {
+        Map<ChaveContador, Integer> contadores = new HashMap<>();
+
+        int totalAtendidos = 0;
+        int totalGenericos = 0;
+        int totalSituacaoRuaMasculino = 0;
+        int totalSituacaoRuaFeminino = 0;
 
         this.getConectar();
         try {
-            this.executarSql("select * from tb_senhas");
-
+            this.executarSql("SELECT * FROM tb_senhas");
             while (this.getResultSet().next()) {
-                contadores.put("contador18", contadores.get("contador18") + 1); // Incrementa o total de pessoas atendidas
-
-                String idadeString = this.getResultSet().getString(3);
-                String genero = this.getResultSet().getString(4);
-                String respostaSim = this.getResultSet().getString(5);
-                String valorColuna = this.getResultSet().getString(3);
+                totalAtendidos++;
 
                 try {
-                    int idade = Integer.parseInt(idadeString);
-                    boolean isDeficiente = "SIM".equalsIgnoreCase(respostaSim); // Verifica se a pessoa é deficiente
+                    int idade = Integer.parseInt(this.getResultSet().getString(4));
+                    String generoStr = this.getResultSet().getString(5);
+                    String respostaSim = this.getResultSet().getString(6);
+                    String situacaoRuaStr = this.getResultSet().getString(8); // Coluna de situação de rua
 
-                    // Identifica a faixa etária e o gênero, atualizando os contadores
-                    if (idade >= 3 && idade < 17) {
-                        if ("Masculino".equalsIgnoreCase(genero)) {
-                            // Se for deficiente, incrementa no contador de deficientes
-                            if (isDeficiente) {
-                                contadores.put("contador16", contadores.get("contador16") + 1);
-                            } else {
-                                contadores.put("contador1", contadores.get("contador1") + 1);
-                            }
-                        } else if ("Feminino".equalsIgnoreCase(genero)) {
-                            if (isDeficiente) {
-                                contadores.put("contador19", contadores.get("contador19") + 1);
-                            } else {
-                                contadores.put("contador3", contadores.get("contador3") + 1);
-                            }
+                    FaixaEtaria faixa = classificarIdade(idade);
+                    Genero genero = "Masculino".equalsIgnoreCase(generoStr) ? Genero.MASCULINO
+                            : "Feminino".equalsIgnoreCase(generoStr) ? Genero.FEMININO : Genero.OUTRO;
+                    boolean deficiente = "SIM".equalsIgnoreCase(respostaSim);
+                    boolean situacaoRua = "PESSOA EM SITUAÇÃO DE RUA".equalsIgnoreCase(situacaoRuaStr);
+
+                    // Se a pessoa está em situação de rua, conta apenas por sexo
+                    if (situacaoRua) {
+                        if (genero == Genero.MASCULINO) {
+                            totalSituacaoRuaMasculino++;
+                        } else if (genero == Genero.FEMININO) {
+                            totalSituacaoRuaFeminino++;
                         }
-                    } else if (idade >= 18 && idade < 59) {
-                        if ("Masculino".equalsIgnoreCase(genero)) {
-                            if (isDeficiente) {
-                                contadores.put("contador20", contadores.get("contador20") + 1);
-                            } else {
-                                contadores.put("contador5", contadores.get("contador5") + 1);
-                            }
-                        } else if ("Feminino".equalsIgnoreCase(genero)) {
-                            if (isDeficiente) {
-                                contadores.put("contador21", contadores.get("contador21") + 1);
-                            } else {
-                                contadores.put("contador7", contadores.get("contador7") + 1);
-                            }
-                        }
-                    } else if (idade >= 60) {
-                        if ("Masculino".equalsIgnoreCase(genero)) {
-                            if (isDeficiente) {
-                                contadores.put("contador22", contadores.get("contador22") + 1);
-                            } else {
-                                contadores.put("contador9", contadores.get("contador9") + 1);
-                            }
-                            contadores.put("contador24", contadores.get("contador24") + 1);
-                        } else if ("Feminino".equalsIgnoreCase(genero)) {
-                            if (isDeficiente) {
-                                contadores.put("contador23", contadores.get("contador23") + 1);
-                            } else {
-                                contadores.put("contador11", contadores.get("contador11") + 1);
-                            }
-                            contadores.put("contador25", contadores.get("contador25") + 1);
-                        }
-                    } else if ("1".equalsIgnoreCase(valorColuna)) {
-                        contadores.put("contador12", contadores.get("contador12") + 1);
+                        continue; // Não conta essa pessoa nos contadores gerais
                     }
+
+                    // Se idade ou gênero forem inválidos, ignora
+                    if (faixa == FaixaEtaria.DESCONHECIDA || genero == Genero.OUTRO) {
+                        totalGenericos++;
+                        continue;
+                    }
+
+                    // Contador normal
+                    ChaveContador chave = new ChaveContador(faixa, genero, deficiente);
+                    contadores.put(chave, contadores.getOrDefault(chave, 0) + 1);
+
                 } catch (NumberFormatException e) {
-                    System.err.println("Erro ao converter idade para inteiro: " + idadeString);
-                    contadores.put("contador12", contadores.get("contador12") + 1); // Incrementa o genérico em caso de erro
+                    totalGenericos++;
                 }
             }
 
-            // Calcula o total de deficientes
-            contadores.put("contador17", contadores.get("contador16") + contadores.get("contador19")
-                    + contadores.get("contador20") + contadores.get("contador21")
-                    + contadores.get("contador22") + contadores.get("contador23"));
+            // Total de deficientes (exceto os em situação de rua)
+            int totalDeficientes = contadores.entrySet().stream()
+                    .filter(entry -> entry.getKey().deficiente)
+                    .mapToInt(Map.Entry::getValue)
+                    .sum();
 
-            // Atualiza o objeto Relatorios
-            relatorio.set3_17_ANOS_MASCULINO(contadores.get("contador1"));
-            relatorio.set3_17_ANOS_MASCULINO_CPD(contadores.get("contador16"));
-            relatorio.set3_17_ANOS_FEMININO(contadores.get("contador3"));
-            relatorio.set3_17_ANOS_FEMININO_CPD(contadores.get("contador19"));
-            relatorio.set18_59_ANOS_MASCULINO(contadores.get("contador5"));
-            relatorio.set18_59_ANOS_MASCULINO_CPD(contadores.get("contador20"));
-            relatorio.set18_59_ANOS_FEMININO(contadores.get("contador7"));
-            relatorio.set18_59_ANOS_FEMININO_CPD(contadores.get("contador21"));
-            relatorio.setA_PARTIR_DE_60_ANOS_MASCULINO(contadores.get("contador9"));
-            relatorio.setA_PARTIR_DE_60_ANOS_MASCULINO_CPD(contadores.get("contador22"));
-            relatorio.setA_PARTIR_DE_60_ANOS_FEMININO(contadores.get("contador11"));
-            relatorio.setA_PARTIR_DE_60_ANOS_FEMININO_CPD(contadores.get("contador23"));
-            relatorio.setPESSOAS_SITUACAO_RUA_MASCULINO(contadores.get("contador24"));
-            relatorio.setPESSOAS_SITUACAO_RUA_FEMININO(contadores.get("contador25"));
-            relatorio.setGenericos(contadores.get("contador12"));
-            relatorio.setTotalDePessoasAtendidas(contadores.get("contador18"));
-            relatorio.setDeficientes(contadores.get("contador17"));
+            // Mapeia os grupos normais
+            relatorio.set3_17_ANOS_MASCULINO(contadores.getOrDefault(new ChaveContador(FaixaEtaria.INFANTIL, Genero.MASCULINO, false), 0));
+            relatorio.set3_17_ANOS_MASCULINO_CPD(contadores.getOrDefault(new ChaveContador(FaixaEtaria.INFANTIL, Genero.MASCULINO, true), 0));
+            relatorio.set3_17_ANOS_FEMININO(contadores.getOrDefault(new ChaveContador(FaixaEtaria.INFANTIL, Genero.FEMININO, false), 0));
+            relatorio.set3_17_ANOS_FEMININO_CPD(contadores.getOrDefault(new ChaveContador(FaixaEtaria.INFANTIL, Genero.FEMININO, true), 0));
+
+            relatorio.set18_59_ANOS_MASCULINO(contadores.getOrDefault(new ChaveContador(FaixaEtaria.ADULTO, Genero.MASCULINO, false), 0));
+            relatorio.set18_59_ANOS_MASCULINO_CPD(contadores.getOrDefault(new ChaveContador(FaixaEtaria.ADULTO, Genero.MASCULINO, true), 0));
+            relatorio.set18_59_ANOS_FEMININO(contadores.getOrDefault(new ChaveContador(FaixaEtaria.ADULTO, Genero.FEMININO, false), 0));
+            relatorio.set18_59_ANOS_FEMININO_CPD(contadores.getOrDefault(new ChaveContador(FaixaEtaria.ADULTO, Genero.FEMININO, true), 0));
+
+            relatorio.setA_PARTIR_DE_60_ANOS_MASCULINO(contadores.getOrDefault(new ChaveContador(FaixaEtaria.IDOSO, Genero.MASCULINO, false), 0));
+            relatorio.setA_PARTIR_DE_60_ANOS_MASCULINO_CPD(contadores.getOrDefault(new ChaveContador(FaixaEtaria.IDOSO, Genero.MASCULINO, true), 0));
+            relatorio.setA_PARTIR_DE_60_ANOS_FEMININO(contadores.getOrDefault(new ChaveContador(FaixaEtaria.IDOSO, Genero.FEMININO, false), 0));
+            relatorio.setA_PARTIR_DE_60_ANOS_FEMININO_CPD(contadores.getOrDefault(new ChaveContador(FaixaEtaria.IDOSO, Genero.FEMININO, true), 0));
+
+            // Totais
+            relatorio.setGenericos(totalGenericos);
+            relatorio.setTotalDePessoasAtendidas(totalAtendidos);
+            relatorio.setDeficientes(totalDeficientes);
+
+            // Situação de rua por sexo
+            relatorio.setPESSOAS_SITUACAO_RUA_MASCULINO(totalSituacaoRuaMasculino);
+            relatorio.setPESSOAS_SITUACAO_RUA_FEMININO(totalSituacaoRuaFeminino);
 
             return relatorio;
 
@@ -299,40 +156,73 @@ public class RelatoriosDao extends ConexaoBD {
         }
     }
 
-    public void escreverNoRELATORIOPDF(String texto) throws FileNotFoundException {
-        // Constantes para reutilização
-        final String DATE_FORMAT = "dd_MM_yyyy";
-        final String PDF_EXTENSION = "_ALEIXO.pdf"; //NOME DO DOCUMENTO
+    public String gerarTextoRelatorio(String data, String ocorrencias) {
+        StringBuilder dados = new StringBuilder();
 
-        // Formata a data e define o nome do arquivo
-        String fileName = "RELATORIO_" + new SimpleDateFormat(DATE_FORMAT).format(new Date()) + PDF_EXTENSION;
-
-        Document document = new Document(PageSize.A4);
-
+        this.getConectar();
         try {
-            // Criação do escritor para o PDF
-            PdfWriter.getInstance(document, new FileOutputStream(fileName));
-            document.open();
+            this.executar("SELECT * FROM tb_relatorios WHERE data ='" + data + "'");
 
-            // Adiciona o texto ao PDF
-            document.add(new Paragraph(texto));
-        } catch (FileNotFoundException e) {
-            System.err.println("Erro: Arquivo não encontrado ou não pôde ser criado. Detalhes: " + e.getMessage());
-        } catch (DocumentException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao gerar o documento PDF: " + e.getMessage());
-        } finally {
-            // Fecha o documento
-            if (document.isOpen()) {
-                document.close();
-            }
+            Relatorios relatorios = new Relatorios();
+            relatorios = lerParaOBl(relatorios);
 
-            // Tenta abrir o arquivo gerado no sistema
-            try {
-                Desktop.getDesktop().open(new File(fileName));
-            } catch (IOException e) {
-                System.err.println("Erro ao tentar abrir o arquivo PDF: " + e.getMessage());
+            while (rs.next()) {
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+                Date date = new Date();
+
+                dados.append("RELATÓRIO DIÁRIO\n\n")
+                        .append("NOVOS CADASTROS: ").append(clientesDao.checarClientesCadastrados()).append("\n\n")
+                        .append("CLIENTES DE 3 ATÉ 17 ANOS MASCULINO: ").append(rs.getInt(1)).append("\n")
+                        .append("CLIENTES DE 3 ATÉ 17 ANOS MASCULINO (PCD): ").append(rs.getInt(2)).append("\n")
+                        .append("CLIENTES DE 3 ATÉ 17 ANOS FEMININO: ").append(rs.getInt(3)).append("\n")
+                        .append("CLIENTES DE 3 ATÉ 17 ANOS FEMININO (PCD): ").append(rs.getInt(4)).append("\n")
+                        .append("CLIENTES DE 18 ATÉ 59 ANOS MASCULINO: ").append(rs.getInt(5)).append("\n")
+                        .append("CLIENTES DE 18 ATÉ 59 ANOS MASCULINO (PCD): ").append(rs.getInt(6)).append("\n")
+                        .append("CLIENTES DE 18 ATÉ 59 ANOS FEMININO: ").append(rs.getInt(7)).append("\n")
+                        .append("CLIENTES DE 18 ATÉ 59 ANOS FEMININO (PCD): ").append(rs.getInt(8)).append("\n")
+                        .append("A PARTIR DE 60 ANOS MASCULINO: ").append(rs.getInt(9)).append("\n")
+                        .append("A PARTIR DE 60 ANOS MASCULINO (PCD): ").append(rs.getInt(10)).append("\n")
+                        .append("A PARTIR DE 60 ANOS FEMININO: ").append(rs.getInt(11)).append("\n")
+                        .append("A PARTIR DE 60 ANOS FEMININO (PCD): ").append(rs.getInt(12)).append("\n")
+                        .append("PESSOAS EM SITUAÇÃO DE RUA (MASCULINO): ").append(rs.getInt(13)).append("\n")
+                        .append("PESSOAS EM SITUAÇÃO DE RUA (FEMININO): ").append(rs.getInt(14)).append("\n")
+                        .append("SEM CADASTRO (GENÉRICAS): ").append(relatorios.getGenericos()).append("\n\n")
+                        .append("REFEIÇÕES OFERTADAS: ").append(refeicoes_ofertadas).append("\n")
+                        .append("REFEIÇÕES VENDIDAS: ").append(controllerSenha.controlRetornarUltimaSenha()).append("\n")
+                        .append("REFEIÇÕES SERVIDAS: ").append(refeicoesDao.retornarTotalServido()).append("\n")
+                        .append("SOBRA DE REFEIÇÕES: ").append(refeicoesDao.retornarTotalSOBRA()).append("\n")
+                        .append("TOTAL PCD: ").append(rs.getInt(15)).append("\n\n")
+                        .append("OCORRÊNCIAS:\n").append(ocorrencias).append("\n\n")
+                        .append("EXPEDIENTE FECHADO POR: ").append(funcionarioDao.retornarUltimoLogin()).append("\n")
+                        .append("DATA: ").append(dateFormat.format(date)).append("\n\n")
+                        .append("PRATO CHEIO CENTRO\n");
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+        return dados.toString();
+    }
+
+    public void escreverNoRELATORIOPDF(String texto) {
+        try {
+            Document document = new Document(PageSize.A4);
+            String fileName = "RELATORIO_" + new SimpleDateFormat("dd_MM_yyyy").format(new Date()) + "_PRATO_CHEIO_CENTRO.pdf";
+            PdfWriter.getInstance(document, new FileOutputStream(fileName));
+
+            document.open();
+            document.add(new Paragraph(texto));
+            document.close();
+
+            Desktop.getDesktop().open(new File(fileName));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void gerarRelatorio(String data, String ocorrencias) {
+        String texto = gerarTextoRelatorio(data, ocorrencias);
+        escreverNoRELATORIOPDF(texto);
     }
 
     //LISTAR SENHAS. 
@@ -368,53 +258,92 @@ public class RelatoriosDao extends ConexaoBD {
         return listSenha;
     }
 
-    public String lerRelatorios(String data, String ocorrencias) {
-        String dados = "";
-
+    public void gerarRelatorioPDF(String data, String ocorrencias) {
         this.getConectar();
+
         try {
-
-            this.executar("select * from tb_relatorios where data ='" + data + "'");
-
+            this.executar("SELECT * FROM tb_relatorios WHERE data ='" + data + "'");
             Relatorios relatorios = new Relatorios();
             relatorios = lerParaOBl(relatorios);
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+            Date date = new Date();
+
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream("RelatorioDiario.pdf"));
+            document.open();
+
+            Font titulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
+            Font cabecalho = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
+            Font normal = FontFactory.getFont(FontFactory.HELVETICA, 10);
+
+            Paragraph title = new Paragraph("RELATÓRIO DIÁRIO\n\n", titulo);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+
+            // Adicionando tabela
+            PdfPTable table = new PdfPTable(2); // 2 colunas
+            table.setWidthPercentage(100);
+            table.setSpacingBefore(10f);
+            table.setSpacingAfter(10f);
 
             while (rs.next()) {
+                addRow(table, "NOVOS CADASTROS", String.valueOf(clientesDao.checarClientesCadastrados()));
 
-                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-                Date date = new Date();
-
-                dados = "                                            RELATÓRIO DIÁRIO \n"
-                        + //"---------Data: "+dateFormat.format(date)+"---------\n\n"+
-                        " NOVOS CADASTROS: " + clientesDao.checarClientesCadastrados() + "\n\n"
-                        + "                                          USUÁRIOS POR FAIXA ETÁRIA \n"
-                        + "CLIENTES DE 3 ATÉ 17 ANOS MASCULINO: " + rs.getInt(1) + "\n" //3-17 ANOS MASCULINOS
-                        + "CLIENTES DE 3 ATÉ 17 ANOS MASCULINO(PCD): " + rs.getInt(2) + "\n" //3-17 ANOS MASCULINOS (PCD)
-                        + "CLIENTES DE 3 ATÉ 17 ANOS FEMININO: " + rs.getInt(3) + "\n" //3-17 ANOS FEMININO
-                        + "CLIENTES DE 3 ATÉ 17 ANOS FEMININO(PCD): " + rs.getInt(4) + "\n" //3-17 ANOS FEMININO (PCD)
-                        + "CLIENTES DE 18 ATÉ 59 ANOS MASCULINO: " + rs.getInt(5) + "\n" //18-59 ANOS MASCULINO
-                        + "CLIENTES DE 18 ATÉ 59 ANOS MASCULINO(PCD): " + rs.getInt(6) + "\n" //18-59 ANOS MASCULINO (PCD)
-                        + "CLIENTES DE 18 ATÉ 59 ANOS FEMININO: " + rs.getInt(7) + "\n" //18-59 ANOS FEMININO
-                        + "CLIENTES DE 18 ATÉ 59 ANOS FEMININO(PCD): " + rs.getInt(8) + "\n" //18-59 ANOS FEMININO (PCD)
-                        + "A PARTIR DE 60 ANOS MASCULINO: " + rs.getInt(9) + "\n" //A PARTIR DE 60 ANOS MASCULINO
-                        + "A PARTIR DE 60 ANOS MASCULINO(PCD): " + rs.getInt(10) + "\n" //A PARTIR DE 60 ANOS MASCULINO (PCD)
-                        + "A PARTIR DE 60 ANOS Feminino: " + rs.getInt(11) + "\n" //A PARTIR DE 60 ANOS FEMININO
-                        + "A PARTIR DE 60 ANOS Feminino(PCD): " + rs.getInt(12) + "\n" //A PARTIR DE 60 ANOS FEMININO (PCD)
-                        + "PESSOAS EM SITUAÇÃO DE RUA (MASCULINO): " + rs.getInt(13) + "\n" //PESSOAS EM SITUAÇÃO DE RUA MASCULINO
-                        + "PESSOAS EM SITUAÇÃO DE RUA (FEMININO): " + rs.getInt(14) + "\n" //PESSOAS EM SITUAÇÃO DE RUA FEMININO
-                        + "SEM CADASTRO (GENÉRICAS): " + relatorios.getGenericos() + "\n\n" //PESSOAS SEM CADASTROS
-                        + "REFEIÇÕES OFERTADAS: " + refeicoes_ofertadas + "\n"//REFEIÇÕES OFERTADAS (QTD. REFEIÇÕES DE UNIDADES)
-                        + "REFEIÇÕES VENDIDAS: " + controllerSenha.controlRetornarUltimaSenha() + "\n"//REFEIÇÕES VENDIDAS
-                        + "REFEIÇÕES SERVIDAS " + refeicoesDao.retornarTotalServido() + "\n"//REFEIÇÕES SERVIDAS
-                        + "SOBRA DE REFEIÇÕES " + refeicoesDao.retornarTotalSOBRA() + "\n"//SOBRA DE REFEIÇÕES
-                        + "Total de atendimento à Pessoas com Deficiência (PCD) " + rs.getInt(15) + "\n"// TOTAL DE PESSOAS COM DEFICIÊNCIA
-                        + ocorrencias + "\n\n"
-                        + "EXPEDIENTE FECHADO POR: " + funcionarioDao.retornarUltimoLogin() + "\n DATA: " + dateFormat.format(date) + "\n\nPRATO CHEIO ALEIXO";
+                addRow(table, "CLIENTES DE 3 ATÉ 17 ANOS MASCULINO", rs.getInt(1) + "");
+                addRow(table, "CLIENTES DE 3 ATÉ 17 ANOS MASCULINO (PCD)", rs.getInt(2) + "");
+                addRow(table, "CLIENTES DE 3 ATÉ 17 ANOS FEMININO", rs.getInt(3) + "");
+                addRow(table, "CLIENTES DE 3 ATÉ 17 ANOS FEMININO (PCD)", rs.getInt(4) + "");
+                addRow(table, "CLIENTES DE 18 ATÉ 59 ANOS MASCULINO", rs.getInt(5) + "");
+                addRow(table, "CLIENTES DE 18 ATÉ 59 ANOS MASCULINO (PCD)", rs.getInt(6) + "");
+                addRow(table, "CLIENTES DE 18 ATÉ 59 ANOS FEMININO", rs.getInt(7) + "");
+                addRow(table, "CLIENTES DE 18 ATÉ 59 ANOS FEMININO (PCD)", rs.getInt(8) + "");
+                addRow(table, "A PARTIR DE 60 ANOS MASCULINO", rs.getInt(9) + "");
+                addRow(table, "A PARTIR DE 60 ANOS MASCULINO (PCD)", rs.getInt(10) + "");
+                addRow(table, "A PARTIR DE 60 ANOS FEMININO", rs.getInt(11) + "");
+                addRow(table, "A PARTIR DE 60 ANOS FEMININO (PCD)", rs.getInt(12) + "");
+                addRow(table, "PESSOAS EM SITUAÇÃO DE RUA (MASCULINO)", rs.getInt(13) + "");
+                addRow(table, "PESSOAS EM SITUAÇÃO DE RUA (FEMININO)", rs.getInt(14) + "");
+                addRow(table, "SEM CADASTRO (GENÉRICAS)", String.valueOf(relatorios.getGenericos()));
+                addRow(table, "REFEIÇÕES OFERTADAS", String.valueOf(refeicoes_ofertadas));
+                addRow(table, "REFEIÇÕES VENDIDAS", controllerSenha.controlRetornarUltimaSenha() + "");
+                addRow(table, "REFEIÇÕES SERVIDAS", refeicoesDao.retornarTotalServido() + "");
+                addRow(table, "SOBRA DE REFEIÇÕES", refeicoesDao.retornarTotalSOBRA() + "");
+                addRow(table, "TOTAL PCD", rs.getInt(15) + "");
             }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro na consulta" + e.getMessage());
-        }
 
-        return dados;
+            document.add(table);
+
+            // Ocorrências
+            Paragraph ocorr = new Paragraph("Ocorrências:\n" + ocorrencias + "\n\n", normal);
+            document.add(ocorr);
+
+            // Rodapé
+            Paragraph footer = new Paragraph("EXPEDIENTE FECHADO POR: " + funcionarioDao.retornarUltimoLogin()
+                    + "\nDATA: " + dateFormat.format(date)
+                    + "\n\nPRATO CHEIO CENTRO", normal);
+            footer.setAlignment(Element.ALIGN_LEFT);
+            document.add(footer);
+
+            document.close();
+            System.out.println("Relatório gerado com sucesso.");
+        } catch (DocumentException | FileNotFoundException | SQLException e) {
+        }
+    }
+
+    private void addRow(PdfPTable table, String label, String value) {
+        table.addCell(new PdfPCell(new Phrase(label)));
+        table.addCell(new PdfPCell(new Phrase(value)));
+    }
+
+    public FaixaEtaria classificarIdade(int idade) {
+        if (idade >= 3 && idade < 17) {
+            return FaixaEtaria.INFANTIL;
+        } else if (idade >= 18 && idade < 59) {
+            return FaixaEtaria.ADULTO;
+        } else if (idade >= 60) {
+            return FaixaEtaria.IDOSO;
+        } else {
+            return FaixaEtaria.DESCONHECIDA;
+        }
     }
 }
