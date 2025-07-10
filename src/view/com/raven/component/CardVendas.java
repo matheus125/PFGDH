@@ -1,15 +1,11 @@
 package view.com.raven.component;
 
-import java.sql.*;
 import com.raven.banco.ConexaoBD;
-import com.raven.controller.ControllerDependentes;
-import com.raven.controller.ControllerRelatorios;
 import com.raven.controller.ControllerSenha;
 import com.raven.dao.FrequenciaDAO;
 import com.raven.dao.SenhaDao;
 import com.raven.dao.TitularDao;
 import com.raven.model.Frequencia;
-import com.raven.model.Relatorios;
 import com.raven.model.Senha;
 import com.raven.model.Titular;
 import com.raven.tabelas.TabelaUniversal;
@@ -33,7 +29,7 @@ import view.com.raven.swing.ScrollBar;
 
 public final class CardVendas extends javax.swing.JPanel {
 
-    int id_clientes, id_frequencia, contador = 300;
+    int id_clientes, id_frequencia, contador = 400;
 
     String idade_dependente, genero_dependente, data2, genero, deficiencia, idade, nome_dependente, dependencia, status_cliente;
 
@@ -169,7 +165,7 @@ public final class CardVendas extends javax.swing.JPanel {
 
         boolean resultado = controllerSenha.controlSaveSenhasGenericas(senha);
         if (resultado == true) {
-            JOptionPane.showMessageDialog(this, "Salvo com sucesso!");
+//            JOptionPane.showMessageDialog(this, "Salvo com sucesso!");
             senhaDao.escreverNoTXT(senhaDao.recuperarSenha());
             ultimaSenha.setText("Última senha: " + senhaDao.retornarUltimaSenha());
         } else {
@@ -533,7 +529,7 @@ public final class CardVendas extends javax.swing.JPanel {
     private void table_cliente_DependenteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_cliente_DependenteMouseClicked
         String nome = "" + table_cliente_Dependente.getValueAt(table_cliente_Dependente.getSelectedRow(), 0);
         txtCliente.setText(nome);
-
+        txtcpf.setText("");
         int index = table_cliente_Dependente.getSelectedRow();
         TableModel model = table_cliente_Dependente.getModel();
         int value1 = Integer.parseInt(model.getValueAt(index, 1).toString());
@@ -562,7 +558,7 @@ public final class CardVendas extends javax.swing.JPanel {
         try {
             while (con.getResultSet().next()) {
                 txtid_cliente.setText(con.getResultSet().getString("t.id"));
-                
+
                 txtCliente.setText(con.getResultSet().getString("t.nome_Completo"));
                 txtcpf.setText(con.getResultSet().getString("t.cpf"));
                 nome_dependente = con.getResultSet().getString("d.nome_dependente");

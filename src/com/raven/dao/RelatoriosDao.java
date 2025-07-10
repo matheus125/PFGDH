@@ -26,7 +26,7 @@ import java.util.Map;
 public class RelatoriosDao extends ConexaoBD {
 
     String nome = "";
-    String refeicoes_ofertadas = "300";
+    String refeicoes_ofertadas = "400";
 
     ControllerSenha controllerSenha = new ControllerSenha();
     RefeicoesDao refeicoesDao = new RefeicoesDao();
@@ -195,7 +195,7 @@ public class RelatoriosDao extends ConexaoBD {
                         .append("OCORRÊNCIAS:\n").append(ocorrencias).append("\n\n")
                         .append("EXPEDIENTE FECHADO POR: ").append(funcionarioDao.retornarUltimoLogin()).append("\n")
                         .append("DATA: ").append(dateFormat.format(date)).append("\n\n")
-                        .append("PRATO CHEIO NHAMUNDÁ\n");
+                        .append("PRATO CHEIO VIVER MELHOR\n");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -207,7 +207,7 @@ public class RelatoriosDao extends ConexaoBD {
     public void escreverNoRELATORIOPDF(String texto) {
         try {
             Document document = new Document(PageSize.A4);
-            String fileName = "RELATORIO_" + new SimpleDateFormat("dd_MM_yyyy").format(new Date()) + "_PRATO_CHEIO_NHAMUNDA.pdf";
+            String fileName = "RELATORIO_" + new SimpleDateFormat("dd_MM_yyyy").format(new Date()) + "_PRATO_CHEIO_VIVER_MELHOR.pdf";
             PdfWriter.getInstance(document, new FileOutputStream(fileName));
 
             document.open();
@@ -320,7 +320,7 @@ public class RelatoriosDao extends ConexaoBD {
             // Rodapé
             Paragraph footer = new Paragraph("EXPEDIENTE FECHADO POR: " + funcionarioDao.retornarUltimoLogin()
                     + "\nDATA: " + dateFormat.format(date)
-                    + "\n\nPRATO CHEIO NHAMUNDÁ", normal);
+                    + "\n\nPRATO CHEIO VIVER MELHOR", normal);
             footer.setAlignment(Element.ALIGN_LEFT);
             document.add(footer);
 

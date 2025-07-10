@@ -31,7 +31,7 @@ public class SenhaDao extends ConexaoBD {
         try {
             this.getConectar();
             this.executarSql(SalvarSenha);
-            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
+//            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
             return true;
         } catch (Exception erro) {
             return false;
@@ -123,10 +123,10 @@ public class SenhaDao extends ConexaoBD {
             nomeCliente = this.getResultSet().getString("cliente");
 
             texto.append(senha).append("\n");
-            texto.append("NOME: ").append(nomeCliente).append("\n\n");
-            texto.append(dateFormat.format(dataAtual)).append("\n\n");
-            texto.append("PRATO CHEIO NHAMUNDÁ").append("\n\n");
-            texto.append(separador);
+            texto.append("NOME: ").append(nomeCliente).append("\n");
+            texto.append(dateFormat.format(dataAtual)).append("\n");
+            texto.append("PRATO VIVER MELHOR").append("\n");
+//            texto.append(separador);
         } else {
             texto.append("NÃO ENCONTRADO\n\n");
         }

@@ -6,10 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -135,7 +131,7 @@ public class CardBackupSistema extends javax.swing.JPanel {
         String host = "localhost";
         String user = "root";
         String password = "#Wiccan13#";
-        String database = "nhamunda";
+        String database = "viver_melhor";
         String port = "3306";
 
         // Comando completo do mysqldump
@@ -190,7 +186,7 @@ public class CardBackupSistema extends javax.swing.JPanel {
         // Criar a pasta
         criarPasta(caminhoPasta);
 
-        String filename = "C:/Backup/NHAMUNDÁ.sql"; // Defina o caminho do arquivo de backup
+        String filename = "C:/Backup/viver_melhor.sql"; // Defina o caminho do arquivo de backup
         gerarBackup(filename);
 
         // Ler o conteúdo da pasta

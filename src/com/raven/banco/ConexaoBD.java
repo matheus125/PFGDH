@@ -18,12 +18,12 @@ public class ConexaoBD {
      * Variavel para login com banco
      */
     // Constantes para conexão com o banco de dados
-    private static final String URL = "jdbc:mysql://localhost/nhamunda";       // Exemplo: "jdbc:mysql://localhost/dev05"
+    private static final String URL = "jdbc:mysql://localhost/viver_melhor";       // Exemplo: "jdbc:mysql://localhost/dev05"
     private static final String USER = "root";     // Exemplo: "root"
     private static final String PASSWORD = "#Wiccan13#"; // Exemplo: "password"
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
 
-    private final String url = "jdbc:mysql://localhost/nhamunda";
+    private final String url = "jdbc:mysql://localhost/viver_melhor";
     private final String user = "root";
     private final String pass = "#Wiccan13#";
     private final String driver = "com.mysql.cj.jdbc.Driver";
