@@ -19,8 +19,13 @@ public class ControllerSenha {
     }
 
     //Verificar Cliente com senha
-    public boolean controlVerificarSenhaCliente(String nome) {
-        return this.senhaDao.checarSenhaCliente(nome);
+    public boolean controlVerificarSenhaCliente(String cpf) {
+        return this.senhaDao.checarSenhaCliente(cpf);
+    }
+    
+     //Verificar Cliente com senha
+    public boolean controlVerificarSenhaDependente(String nome) {
+        return this.senhaDao.checarSenhaDependente(nome);
     }
 
     //Retorna a ultima senha inserida no banco

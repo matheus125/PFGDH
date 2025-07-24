@@ -527,25 +527,31 @@ public final class CardVendas extends javax.swing.JPanel {
     }//GEN-LAST:event_btnBuscarClienteTitularActionPerformed
 
     private void table_cliente_DependenteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_cliente_DependenteMouseClicked
-        String nome = "" + table_cliente_Dependente.getValueAt(table_cliente_Dependente.getSelectedRow(), 0);
-        txtCliente.setText(nome);
-        txtcpf.setText("");
-        int index = table_cliente_Dependente.getSelectedRow();
-        TableModel model = table_cliente_Dependente.getModel();
-        int value1 = Integer.parseInt(model.getValueAt(index, 1).toString());
-        String value2 = model.getValueAt(index, 2).toString();
+        int selectedRow = table_cliente_Dependente.getSelectedRow();
+        if (selectedRow != -1) {
+            TableModel model = table_cliente_Dependente.getModel();
 
-        String idade = Integer.toString(value1);
+            String nome = model.getValueAt(selectedRow, 0).toString();
+            txtCliente.setText(nome);
+            txtcpf.setText("");
 
-        txtidade1.setText(idade);
-        txtgenero.setText(value2);
+            try {
+                int idade = Integer.parseInt(model.getValueAt(selectedRow, 1).toString());
+                String genero = model.getValueAt(selectedRow, 2).toString();
 
-        if (controllerSenha.controlVerificarSenhaCliente(table_cliente_Dependente.getValueAt(table_cliente_Dependente.getSelectedRow(), 0).toString())) {
-            JOptionPane.showMessageDialog(null, "Este cliente já comprou senha neste dia!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
-            txtCliente.setText("");
-            txtPesquisarNomeClientes.setText("");
+                txtidade1.setText(String.valueOf(idade));
+                txtgenero.setText(genero);
+
+                if (controllerSenha.controlVerificarSenhaDependente(nome)) {
+                    JOptionPane.showMessageDialog(null, "Este cliente já comprou senha neste dia!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
+                    txtCliente.setText("");
+                    txtPesquisarNomeClientes.setText("");
+                }
+
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Erro ao converter idade!", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
         }
-
 
     }//GEN-LAST:event_table_cliente_DependenteMouseClicked
 

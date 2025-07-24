@@ -8,17 +8,27 @@ import java.awt.RenderingHints;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.IOException;
 import javax.swing.JOptionPane;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
 
 public class CardBackupSistema extends javax.swing.JPanel {
 
     public CardBackupSistema() {
         initComponents();
+        carregarTabela();
     }
 
     String location = null;
     String filename;
+    private static int proximoId = 1; // ID inicial
+    private static final String ARQUIVO = "backup_log.txt";
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -41,11 +51,11 @@ public class CardBackupSistema extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane2 = new javax.swing.JScrollPane();
-        table1 = new view.com.raven.swing.Table();
+        table_backup = new view.com.raven.swing.Table();
         TXT_BACKUP = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        BTN_GERAR_BACKUP = new javax.swing.JButton();
 
-        table1.setModel(new javax.swing.table.DefaultTableModel(
+        table_backup.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -53,12 +63,12 @@ public class CardBackupSistema extends javax.swing.JPanel {
                 "ID", "DATA"
             }
         ));
-        jScrollPane2.setViewportView(table1);
+        jScrollPane2.setViewportView(table_backup);
 
-        jButton1.setText("Gerar Backup");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        BTN_GERAR_BACKUP.setText("Gerar Backup");
+        BTN_GERAR_BACKUP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                BTN_GERAR_BACKUPActionPerformed(evt);
             }
         });
 
@@ -69,11 +79,10 @@ public class CardBackupSistema extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jScrollPane2)
-                        .addComponent(TXT_BACKUP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(483, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 911, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BTN_GERAR_BACKUP)
+                    .addComponent(TXT_BACKUP, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -81,10 +90,10 @@ public class CardBackupSistema extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(TXT_BACKUP, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(BTN_GERAR_BACKUP)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 333, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 614, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 40, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -131,7 +140,7 @@ public class CardBackupSistema extends javax.swing.JPanel {
         String host = "localhost";
         String user = "root";
         String password = "#Wiccan13#";
-        String database = "viver_melhor";
+        String database = "tefe";
         String port = "3306";
 
         // Comando completo do mysqldump
@@ -180,24 +189,86 @@ public class CardBackupSistema extends javax.swing.JPanel {
         }
     }
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void gerarLogBackup() {
+        int proximoId = obterProximoId();
+
+        // Formata a data atual
+        String dataFormatada = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+        String linha = proximoId + "," + dataFormatada;
+
+        // Grava no arquivo
+        try ( BufferedWriter writer = new BufferedWriter(new FileWriter(ARQUIVO, true))) {
+            writer.write(linha);
+            writer.newLine();
+//            JOptionPane.showMessageDialog(this, "Backup gerado com ID: " + proximoId);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao gravar log backup: " + ex.getMessage());
+        }
+    }
+
+    private int obterProximoId() {
+        int ultimoId = 0;
+        try ( BufferedReader reader = new BufferedReader(new FileReader(ARQUIVO))) {
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                String[] partes = linha.split(",");
+                if (partes.length >= 1) {
+                    ultimoId = Integer.parseInt(partes[0]);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            // Primeira execução, arquivo ainda não existe
+            return 1;
+        } catch (IOException | NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao ler arquivo: " + e.getMessage());
+        }
+        return ultimoId + 1;
+    }
+
+    private void carregarTabela() {
+        String[] colunas = {"ID", "Data"};
+        DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
+
+        try ( BufferedReader reader = new BufferedReader(new FileReader(ARQUIVO))) {
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                String[] dados = linha.split(",");
+                if (dados.length == 2) {
+                    Vector<String> linhaTabela = new Vector<>();
+                    linhaTabela.add(dados[0]);
+                    linhaTabela.add(dados[1]);
+                    modelo.addRow(linhaTabela);
+                }
+            }
+            table_backup.setModel(modelo);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar tabela: " + e.getMessage());
+        }
+    }
+
+    private void BTN_GERAR_BACKUPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_GERAR_BACKUPActionPerformed
         String caminhoPasta = "C:/Backup"; // Caminho da pasta a ser criada e lida
 
         // Criar a pasta
         criarPasta(caminhoPasta);
 
-        String filename = "C:/Backup/viver_melhor.sql"; // Defina o caminho do arquivo de backup
+        String filename = "C:/Backup/tefe.sql"; // Defina o caminho do arquivo de backup
         gerarBackup(filename);
 
         // Ler o conteúdo da pasta
         lerConteudoPasta(caminhoPasta);
-    }//GEN-LAST:event_jButton1ActionPerformed
+
+        gerarLogBackup();
+        carregarTabela();
+
+        System.out.println("Registros gravados com sucesso.");
+    }//GEN-LAST:event_BTN_GERAR_BACKUPActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BTN_GERAR_BACKUP;
     private javax.swing.JLabel TXT_BACKUP;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane2;
-    private view.com.raven.swing.Table table1;
+    private view.com.raven.swing.Table table_backup;
     // End of variables declaration//GEN-END:variables
 }

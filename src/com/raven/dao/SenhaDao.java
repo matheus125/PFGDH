@@ -87,7 +87,19 @@ public class SenhaDao extends ConexaoBD {
         }
     }//FIM.
 
-    //CRIA O ARQUIVO PARA LEITURA EM TXT
+    //VERIFICAR SE CLIENTE JÁ REALIZOU A COMPRAR DE SENHA.
+    public boolean checarSenhaDependente(String nome) {
+        this.getConectar();
+        try {
+            this.executarSql("select * from tb_senhas where cliente ='" + nome + "'");
+            return this.getResultSet().next();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro" + e);
+            return false;
+        }
+    }//FIM.
+    
+//CRIA O ARQUIVO PARA LEITURA EM TXT
     public void escreverNoTXT(String texto) {
         File file = new File("SENHA.txt");
         Path caminho = Paths.get("SENHA.txt");
@@ -125,7 +137,7 @@ public class SenhaDao extends ConexaoBD {
             texto.append(senha).append("\n");
             texto.append("NOME: ").append(nomeCliente).append("\n");
             texto.append(dateFormat.format(dataAtual)).append("\n");
-            texto.append("PRATO VIVER MELHOR").append("\n");
+            texto.append("PRATO CHEIO TEFÉ").append("\n");
 //            texto.append(separador);
         } else {
             texto.append("NÃO ENCONTRADO\n\n");

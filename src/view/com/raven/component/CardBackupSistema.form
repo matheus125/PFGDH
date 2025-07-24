@@ -19,13 +19,11 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="jScrollPane2" max="32767" attributes="0"/>
-                      <Component id="TXT_BACKUP" alignment="0" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="jScrollPane2" min="-2" pref="911" max="-2" attributes="0"/>
+                  <Component id="BTN_GERAR_BACKUP" min="-2" max="-2" attributes="0"/>
+                  <Component id="TXT_BACKUP" alignment="0" min="-2" pref="452" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="483" max="32767" attributes="0"/>
+              <EmptySpace pref="24" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -35,10 +33,10 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="TXT_BACKUP" min="-2" pref="21" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+              <Component id="BTN_GERAR_BACKUP" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jScrollPane2" min="-2" pref="321" max="-2" attributes="0"/>
-              <EmptySpace min="0" pref="333" max="32767" attributes="0"/>
+              <Component id="jScrollPane2" min="-2" pref="614" max="-2" attributes="0"/>
+              <EmptySpace min="0" pref="40" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -51,7 +49,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="view.com.raven.swing.Table" name="table1">
+        <Component class="view.com.raven.swing.Table" name="table_backup">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="2" rowCount="0">
@@ -82,12 +80,12 @@
     </Container>
     <Component class="javax.swing.JLabel" name="TXT_BACKUP">
     </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="BTN_GERAR_BACKUP">
       <Properties>
         <Property name="text" type="java.lang.String" value="Gerar Backup"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BTN_GERAR_BACKUPActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
