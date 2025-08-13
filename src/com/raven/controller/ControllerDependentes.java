@@ -18,6 +18,10 @@ public class ControllerDependentes {
         this.dependentesDao.daoDependentesUpdate(dependentes);
     }
 
+    public boolean controlDeleteDependentes(int codigo) {
+        return this.dependentesDao.daoDeleteDependente(codigo);
+    }
+
     //listar Dependentes
     public ArrayList<Dependentes> returnListDependentesController() {
         return this.dependentesDao.daoListDependentes();

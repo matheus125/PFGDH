@@ -1,30 +1,36 @@
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
+
+import com.raven.dao.DependenteDao;
+import com.raven.model.Dependentes;
+import java.util.List;
 
 public class CalculaIdadeBR {
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+    // Instancia o DAO
+    DependenteDao dao = new DependenteDao(); // Substitua pelo nome real do seu DAO
 
-        // Formato brasileiro
-        DateTimeFormatter formatoBR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    // Cria o filtro com nome ou CPF
+    Dependentes filtro = new Dependentes();
+    filtro.setPesquisar("EMILLY KAMYLE MARQUES DE OLIVEIRA"); // Altere aqui para o nome ou CPF desejado
 
-        // Entrada da data de nascimento
-        System.out.print("Digite sua data de nascimento (dd/MM/yyyy): ");
-        String dataNascimentoStr = scanner.nextLine();
+    // Executa o método de busca
+    List<Dependentes> lista = dao.buscarDependentesPorDependente(filtro);
 
-        // Converte para LocalDate usando o formato BR
-        LocalDate dataNascimento = LocalDate.parse(dataNascimentoStr, formatoBR);
-
-        // Data atual
-        LocalDate dataAtual = LocalDate.now();
-
-        // Cálculo da idade
-        Period idade = Period.between(dataNascimento, dataAtual);
-
-        System.out.println("Você tem " + idade.getYears() + " anos.");
-
-        scanner.close();
+    // Exibe os resultados no console
+    for (Dependentes d : lista) {
+        System.out.println("ID: " + d.getId());
+        System.out.println("Nome: " + d.getNome_Completo());
+        System.out.println("RG: " + d.getRg());
+        System.out.println("CPF: " + d.getCpf());
+        System.out.println("Idade: " + d.getIdade_cliente());
+        System.out.println("Gênero: " + d.getGenero_cliente());
+        System.out.println("Dependência: " + d.getDependencia_cliente());
+        System.out.println("---------------------------");
     }
+
+    if (lista.isEmpty()) {
+        System.out.println("Nenhum dependente encontrado.");
+    }
+}
+
 }

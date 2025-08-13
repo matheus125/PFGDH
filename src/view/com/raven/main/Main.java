@@ -9,6 +9,7 @@ import com.raven.swing.icon.GoogleMaterialDesignIcons;
 import com.raven.swing.icon.IconFontSwing;
 import view.com.raven.form.Form_Home;
 import java.awt.Color;
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JComponent;
@@ -26,7 +27,6 @@ import view.com.raven.component.CardRelatorio;
 
 public class Main extends javax.swing.JFrame {
 
-    
     private Form_Home home;
     private Form_Funcionarios formFuncionarios;
     private Form_Clientes formClientes;
@@ -45,6 +45,19 @@ public class Main extends javax.swing.JFrame {
 
     public Main() {
         initComponents();
+
+        // Gera e envia o backup ao iniciar o sistema
+//        BackupMySQL.gerarBackup();
+//        String caminhoBackup = BackupMySQL.gerarBackup();
+//
+//        if (caminhoBackup != null) {
+//            File file = new File(caminhoBackup);
+//            System.out.println("Arquivo gerado: " + file.getAbsolutePath());
+//            System.out.println("Existe? " + file.exists());
+//            EnviarBackupAPI.enviar(file.getAbsolutePath());
+//        } else {
+//            System.out.println("Falha ao gerar o backup.");
+//        }
         //  Init google icon font
         IconFontSwing.register(GoogleMaterialDesignIcons.getIconFont());
         lbusuarios.setVisible(false);
@@ -96,7 +109,7 @@ public class Main extends javax.swing.JFrame {
                         resposta = JOptionPane.showConfirmDialog(rootPane, "Deseja realmente sair do sistema?");
                         if (resposta == JOptionPane.YES_OPTION) {
                             salvarUserLogsExit();
-                            
+
                             System.exit(0);
                             con.getfecharConexao();
                         }

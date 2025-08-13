@@ -140,7 +140,7 @@ public class CardBackupSistema extends javax.swing.JPanel {
         String host = "localhost";
         String user = "root";
         String password = "#Wiccan13#";
-        String database = "tefe";
+        String database = "uniao";
         String port = "3306";
 
         // Comando completo do mysqldump
@@ -252,7 +252,7 @@ public class CardBackupSistema extends javax.swing.JPanel {
         // Criar a pasta
         criarPasta(caminhoPasta);
 
-        String filename = "C:/Backup/tefe.sql"; // Defina o caminho do arquivo de backup
+        String filename = "C:/Backup/uniao.sql"; // Defina o caminho do arquivo de backup
         gerarBackup(filename);
 
         // Ler o conteúdo da pasta

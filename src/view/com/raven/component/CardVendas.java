@@ -18,7 +18,9 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -557,57 +559,61 @@ public final class CardVendas extends javax.swing.JPanel {
 
     private void table_cliente_TitularMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_cliente_TitularMouseClicked
         String nome = "" + table_cliente_Titular.getValueAt(table_cliente_Titular.getSelectedRow(), 0);
+
         con.getConectar();
-        con.executarSql("select t.id, t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, s.deficiencia, t.status_Cliente, d.nome_dependente, d.Idade, d.genero, d.dependencia_cliente from tb_titular t left join tb_dependentes d on d.id_titular = t.id left join tb_socio_economico_saude s on s.id_titular = t.id where t.nome_Completo ='" + nome + "'");
+        con.executarSql(
+                "SELECT DISTINCT "
+                + "t.id, t.nome_Completo, t.cpf, t.idade_cliente, t.genero_cliente, "
+                + "s.deficiencia, t.status_Cliente, "
+                + "d.nome_dependente, d.Idade, d.genero, d.dependencia_cliente "
+                + "FROM tb_titular t "
+                + "LEFT JOIN tb_dependentes d ON d.id_titular = t.id "
+                + "LEFT JOIN tb_socio_economico_saude s ON s.id_titular = t.id "
+                + "WHERE t.nome_Completo = '" + nome + "'"
+        );
+
         DefaultTableModel modelo = (DefaultTableModel) table_cliente_Dependente.getModel();
         modelo.setNumRows(0);
+
+        Set<String> dependentesAdicionados = new HashSet<>();
+
         try {
             while (con.getResultSet().next()) {
+                // Preenche dados do titular (faz uma vez, pois o titular será o mesmo para todos os dependentes)
                 txtid_cliente.setText(con.getResultSet().getString("t.id"));
-
                 txtCliente.setText(con.getResultSet().getString("t.nome_Completo"));
                 txtcpf.setText(con.getResultSet().getString("t.cpf"));
-                nome_dependente = con.getResultSet().getString("d.nome_dependente");
-
                 txtidade1.setText(con.getResultSet().getString("t.idade_cliente"));
-                idade = txtidade1.getText();
-
                 txtgenero.setText(con.getResultSet().getString("t.genero_cliente"));
-                genero = txtgenero.getText();
-
                 txtdeficiencia.setText(con.getResultSet().getString("s.deficiencia"));
-                deficiencia = txtdeficiencia.getText();
-
-                idade_dependente = con.getResultSet().getString("d.Idade");
-//                idade_dependente = txtidade2.getText();
-
-                genero_dependente = con.getResultSet().getString("d.genero");
-
                 status_cliente = con.getResultSet().getString("t.status_Cliente");
-                dependencia = con.getResultSet().getString("d.dependencia_cliente");
 
-                table_cliente_Dependente_principal.setVerticalScrollBar(new ScrollBar());
-                table_cliente_Dependente_principal.getVerticalScrollBar().setBackground(Color.WHITE);
-                table_cliente_Dependente_principal.getViewport().setBackground(Color.WHITE);
-                JPanel p = new JPanel();
-                p.setBackground(Color.WHITE);
-                table_cliente_Dependente_principal.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
+                // Dados do dependente
+                String nomeDep = con.getResultSet().getString("d.nome_dependente");
+                String idadeDep = con.getResultSet().getString("d.Idade");
+                String generoDep = con.getResultSet().getString("d.genero");
+                String dependenciaDep = con.getResultSet().getString("d.dependencia_cliente");
 
-                //PASSANDO OS DEPENDENTES PARA A OUTRA TABELA.
-                for (int i = 0; i < 1; i++) {
-                    table_cliente_Dependente.addRow(new Object[]{
-                        nome_dependente,
-                        idade_dependente,
-                        genero_dependente,
-                        dependencia
+                // Adiciona somente se for um dependente válido e ainda não adicionado
+                if (nomeDep != null && !nomeDep.trim().isEmpty() && dependentesAdicionados.add(nomeDep)) {
+                    modelo.addRow(new Object[]{
+                        nomeDep,
+                        idadeDep,
+                        generoDep,
+                        dependenciaDep
                     });
                 }
             }
-
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Erro no ao selecionar os dados" + ex);
+            JOptionPane.showMessageDialog(null, "Erro ao selecionar os dados: " + ex);
+        } finally {
+            con.getfecharConexao();
         }
-        if (controllerSenha.controlVerificarSenhaCliente(table_cliente_Titular.getValueAt(table_cliente_Titular.getSelectedRow(), 1).toString())) {
+
+        // Verifica se já comprou senha no dia
+        if (controllerSenha.controlVerificarSenhaCliente(
+                table_cliente_Titular.getValueAt(table_cliente_Titular.getSelectedRow(), 1).toString()
+        )) {
             JOptionPane.showMessageDialog(null, "Este cliente já comprou senha neste dia!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
             txtCliente.setText("");
             txtcpf.setText("");

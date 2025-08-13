@@ -3,11 +3,58 @@ package com.raven.dao;
 import com.raven.banco.ConexaoBD;
 import com.raven.model.Dependentes;
 import java.awt.HeadlessException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 public class DependenteDao extends ConexaoBD {
+
+    public List<Dependentes> buscarDependentesPorDependente(Dependentes dependente) {
+        List<Dependentes> listaDependentes = new ArrayList<>();
+        this.getConectar();
+
+        String sql = "SELECT d.id, d.nome_dependente, d.rg, d.cpf, d.idade, d.genero, "
+                + "d.dependencia_cliente, d.registration_date, d.registration_date_update, "
+                + "t.nome_Completo AS nome_titular, t.cpf AS cpf_titular "
+                + "FROM tb_dependentes d "
+                + "INNER JOIN tb_titular t ON d.id_titular = t.id "
+                + "WHERE d.nome_dependente LIKE ? OR d.cpf LIKE ?";
+
+        try ( PreparedStatement pst = this.getConnection().prepareStatement(sql)) {
+            String filtro = "%" + dependente.getPesquisar() + "%";
+            pst.setString(1, filtro);
+            pst.setString(2, filtro);
+
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                Dependentes d = new Dependentes();
+
+                d.setId(rs.getInt("id"));
+                d.setNome_Completo(rs.getString("nome_dependente"));
+                d.setRg(rs.getString("rg"));
+                d.setCpf(rs.getString("cpf"));
+                d.setIdade_cliente(rs.getInt("idade"));
+                d.setGenero_cliente(rs.getString("genero"));
+                d.setDependencia_cliente(rs.getString("dependencia_cliente"));
+                d.setDt_criacao(rs.getString("registration_date"));
+
+                listaDependentes.add(d);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao buscar dependentes: " + e.getMessage());
+        } finally {
+            this.getfecharConexao();
+        }
+
+        return listaDependentes;
+    }
+    
+    
 
     //METODO DE SALVAR DEPENDENTES
     public boolean daoDependentes(Dependentes dependentes) {
@@ -88,6 +135,21 @@ public class DependenteDao extends ConexaoBD {
     }
     //FIM.
 
+    // MÉTODO DELETE_DEPENDENTES
+    public boolean daoDeleteDependente(int codigo) {
+        String comandoDelete = "CALL sp_deletar_dependente(" + codigo + ");";
+        try {
+            this.getConectar();
+            this.executarSql(comandoDelete);
+            return true;
+        } catch (Exception erro) {
+            System.out.println("Erro: " + erro.getMessage());
+            return false;
+        } finally {
+            this.getfecharConexao();
+        }
+    } // FIM.
+
     //METODO PARA VERIFICAR SE CPF JÁ EXISTE CADASTRO    
     public boolean verificarDependenteExistenteCPF(String cpf) {
 
@@ -155,4 +217,5 @@ public class DependenteDao extends ConexaoBD {
             return false;
         }
     }
+
 }

@@ -7,6 +7,7 @@ import com.raven.controller.ControllerDependentes;
 import com.raven.controller.ControllerSocioEconomico;
 import com.raven.controller.ControllerSocioEconomicoSaude;
 import com.raven.dao.ClientesDao;
+import com.raven.dao.DependenteDao;
 import com.raven.dao.TitularDao;
 import com.raven.model.Titular;
 import com.raven.model.Dependentes;
@@ -20,11 +21,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -59,6 +57,7 @@ public final class CardClientes extends javax.swing.JPanel {
     ControllerSocioEconomicoSaude controllerSocioEconomicoSaude = new ControllerSocioEconomicoSaude();
 
     TitularDao titularDao = new TitularDao();
+    DependenteDao dependenteDao = new DependenteDao();
 
     public CardClientes() {
         initComponents();
@@ -70,28 +69,8 @@ public final class CardClientes extends javax.swing.JPanel {
         desabilitarBotao();
         desabilitarBotaoDependente();
 
-        //INICIALIZAÇÃO DE TABELAS AO LIGAR O SISTEMA.
-        tabela_cliente("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
-                + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.nis,c.status_Cliente, c.registration_date,\n"
-                + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
-                + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
-
-        tabela_cliente_dependente("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
-                + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
-                + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
-                + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
-
-        tabela_cliente_socio_economico("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
-                + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
-                + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
-                + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
-
-        tabela_cliente_socio_economico_Saude("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
-                + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
-                + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
-                + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
-
-        tabela_dependente();
+        //INICIALIZAÇÃO DE TABELAS AO LIGAR O SISTEMA
+        atualizarTabelas();
     }
 
     //TABELA CARREGANDO DADOS DOS CLIENTES NA GUIA CLIENTE
@@ -208,7 +187,7 @@ public final class CardClientes extends javax.swing.JPanel {
         table_cliente_dependente.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }//FIM.
 
-    //TABELA CARREGANDO DADOS DEPENDENTES NA GUIA DEPENDENTES
+//    TABELA CARREGANDO DADOS DEPENDENTES NA GUIA DEPENDENTES
     public final void tabela_dependente() {
         spTableDependentes.setVerticalScrollBar(new ScrollBar());
         spTableDependentes.getVerticalScrollBar().setBackground(Color.WHITE);
@@ -236,6 +215,47 @@ public final class CardClientes extends javax.swing.JPanel {
             });
         }
     }//FIM.
+
+    public final void tabela_dependente(List<Dependentes> listaDependentes) {
+        spTableDependentes.setVerticalScrollBar(new ScrollBar());
+        spTableDependentes.getVerticalScrollBar().setBackground(Color.WHITE);
+        spTableDependentes.getViewport().setBackground(Color.WHITE);
+
+        JPanel p = new JPanel();
+        p.setBackground(Color.WHITE);
+        spTableDependentes.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
+
+        // CORRETO: usar o nome da JTable, não do JScrollPane!
+        DefaultTableModel table = (DefaultTableModel) spTableDependente.getModel();
+        table.setNumRows(0);
+
+        for (Dependentes d : listaDependentes) {
+            table.addRow(new Object[]{
+                d.getId(),
+                d.getNome_Completo(),
+                d.getRg(),
+                d.getCpf(),
+                d.getIdade_cliente(),
+                d.getGenero_cliente(),
+                d.getDependencia_cliente(),
+                d.getDt_criacao()
+            });
+        }
+    }
+
+    public void buscarEPreencherTabela(String filtro) {
+        DependenteDao dao = new DependenteDao();
+        Dependentes filtroDependente = new Dependentes();
+        filtroDependente.setPesquisar(filtro);
+
+        List<Dependentes> listaFiltrada = dao.buscarDependentesPorDependente(filtroDependente);
+
+        if (listaFiltrada.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Nenhum dependente encontrado.");
+        }
+
+        tabela_dependente(listaFiltrada);
+    }
 
     //TABELA CARREGANDO DADOS DOS CLIENTES NA GUIA SOCIO_ECONOMICO
     public final void tabela_cliente_socio_economico(String Sql) {
@@ -369,6 +389,7 @@ public final class CardClientes extends javax.swing.JPanel {
         txtRgDependente.setText("");
         txtcpfDependente.setText("");
         txtIdateDependente.setText("");
+        txt_pesquisar_dependente.setText("");
     }//FIM.
 
     //METODO PARA LIMPAR CAMPOS DA TELA SOCIO_ECONOMICO
@@ -465,6 +486,7 @@ public final class CardClientes extends javax.swing.JPanel {
         btnAlterar.setEnabled(false);
         btnSalvar.setEnabled(false);
         btnCancelar.setEnabled(false);
+        btnExcluir.setEnabled(false);
     }//FIM.
 
     //METODO PARA DESABILITAR BOTÃO DA TELA DEPENDENTE
@@ -472,6 +494,7 @@ public final class CardClientes extends javax.swing.JPanel {
         btnSalvarDependente.setEnabled(false);
         btnAlterarDependente.setEnabled(false);
         btnCancelarDep.setEnabled(false);
+        btnRemoverDependente.setEnabled(false);
     }//FIM.
 
     //METODO PARA HABILITAR BOTÃO DA TELA CLIENTE
@@ -567,24 +590,65 @@ public final class CardClientes extends javax.swing.JPanel {
 
     //METODO SALVAR CLIENTES
     public void saveClientes() {
-        //VARIAVEIS LOCAIS SENDO DECLARADAS COMO STRING.
-        String rua, bairro, cidade, cpf;
+        // ====== 1. Validação de IDADE ======
+        String idadeTexto = txtidade.getText().trim();
+        if (idadeTexto.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Preencha o campo Idade!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
+            txtidade.requestFocus();
+            return;
+        }
+        try {
+            cliIdade = Integer.parseInt(idadeTexto);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Digite apenas números no campo Idade!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
+            txtidade.requestFocus();
+            return;
+        }
 
-        //VARIAVEIS RECEBENDO VALORES DA TELA PARA REALIZAR COMPARAÇÃO DE CAMPOS VAZIOS OU NULOS.
-        rua = txtrua.getText();
-        bairro = txtbairro.getText();
-        cidade = txtCidade.getText();
-        cpf = txtcpf.getText();
+        // ====== 2. Campos de texto ======
+        String rua = txtrua.getText().trim();
+        String bairro = txtbairro.getText().trim();
+        String cidade = txtCidade.getText().trim();
+        String cpf = txtcpf.getText().trim();
 
-        cliIdade = Integer.parseInt(txtidade.getText());
+        // ====== 3. Validação de CPF ======
+        if (cpf.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Preencha o campo CPF!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
+            txtcpf.requestFocus();
+            return;
+        }
 
         CPF pf = new CPF(cpf);
 
-        if (controllerTitular.controlVerificarCPFCadastrado(txtcpf.getText()) == false) {//PRIMEIRO IF DE VERIFICAÇÃO DE CPF CADASTRADO
-            if (!bairro.isEmpty()) {//SEGUNDO IF  PARA CAMPO VAZIO"rua"
-                if (!rua.isEmpty()) {//TERCEIRO IF PARA CAMPO VAZIO "bairro"
-                    if (!cidade.isEmpty()) {//QUARTO IF PARA CAMPO VAZIO "cidade"
-                        if (cliIdade > 17) {//QUINTO IF PARA CAMPO VAZIO "idade"
+        // ====== 4. Validação de NIS (se for numérico) ======
+        String nisTexto = txtNis.getText().trim();
+        if (!nisTexto.isEmpty()) {
+            // Permite apenas dígitos, pontos e traço
+            if (!nisTexto.matches("[0-9.\\-]+")) {
+                JOptionPane.showMessageDialog(this, "O NIS deve conter apenas números, pontos e traço!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
+                txtNis.requestFocus();
+                return;
+            }
+        }
+
+        // ====== 5. Validação de Número da casa ======
+        String numeroCasaTexto = txtnumerocasa.getText().trim();
+        if (!numeroCasaTexto.isEmpty()) {
+            try {
+                Integer.parseInt(numeroCasaTexto);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Digite apenas números no campo Número da Casa!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
+                txtnumerocasa.requestFocus();
+                return;
+            }
+        }
+
+        // ====== 6. Continuação da lógica original ======
+        if (controllerTitular.controlVerificarCPFCadastrado(cpf, id) == false) {
+            if (!bairro.isEmpty()) {
+                if (!rua.isEmpty()) {
+                    if (!cidade.isEmpty()) {
+                        if (cliIdade > 17) {
                             if (pf.isCPF()) {
                                 titular.setNome_Completo(txtnomeCompleto.getText());
                                 titular.setNome_Social(txtnomeSocial.getText());
@@ -595,45 +659,27 @@ public final class CardClientes extends javax.swing.JPanel {
                                 titular.setGenero_cliente((String) this.comboSexo.getSelectedItem());
                                 titular.setEstado_Civil((String) this.comboEst_Civil.getSelectedItem());
                                 titular.setRg(txtRg.getText());
-                                titular.setCpf(txtcpf.getText());
-                                titular.setNis(txtNis.getText());
+                                titular.setCpf(cpf);
+                                titular.setNis(nisTexto);
                                 titular.setStatus_Cliente((String) this.comboStatus.getSelectedItem());
                                 titular.setIdade_cliente(cliIdade);
 
                                 endereco.setCep(txtcep.getText());
                                 endereco.setBairro(bairro);
                                 endereco.setRua(rua);
-                                endereco.setNumero(txtnumerocasa.getText());
+                                endereco.setNumero(numeroCasaTexto);
                                 endereco.setReferencia(txtreferencia.getText());
                                 endereco.setNacionalidade((String) this.combonacionalidade.getSelectedItem());
                                 endereco.setNaturalidade(txtnaturalidade.getText());
                                 endereco.setCidade(cidade);
                                 endereco.setTempoDeMoradia_cliente(txttempomoradia.getText());
 
-                                //Salvando Titular
                                 boolean resultado = controllerTitular.controlSaveClientes(titular, endereco);
-                                if (resultado == true) {//CONDIÇÃO PARA MANDAR O RESULTADO PARA O BACK-END, PARA SALVAR
-                                    //Salvando todos os clientes que são cadastrados todos os dias, para gerar um relatorio ao final do expediente
+                                if (resultado) {
                                     ClientesDao clientesDao = new ClientesDao();
                                     clientesDao.inserirClientesCadastrados();
                                     JOptionPane.showMessageDialog(this, "Salvo com sucesso!");
-                                    tabela_cliente("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
-                                            + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.nis, c.status_Cliente, c.registration_date, \n"
-                                            + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
-                                            + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
-
-                                    tabela_cliente_dependente("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
-                                            + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
-                                            + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
-                                            + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
-                                    tabela_cliente_socio_economico("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
-                                            + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
-                                            + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
-                                            + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
-                                    tabela_cliente_socio_economico_Saude("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
-                                            + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
-                                            + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
-                                            + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
+                                    atualizarTabelas();
                                     limparCampos();
                                     desabilitarCampos();
                                     desabilitarBotao();
@@ -642,33 +688,55 @@ public final class CardClientes extends javax.swing.JPanel {
                                     limparCampos();
                                     desabilitarCampos();
                                     desabilitarBotao();
-                                }//FIM DA CONDIÇÃO PARA SALVAR.
-
+                                }
                             } else {
                                 JOptionPane.showMessageDialog(null, "CPF inválido!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
                             }
                         } else {
-                            JOptionPane.showMessageDialog(this, "Cliente tem que ter 18 anos para realizar o cadastro!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.showMessageDialog(this, "Cliente deve ter pelo menos 18 anos!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
                             txtidade.requestFocus();
-                        }//FIM DA VERIFICAÇÃO DE IDADE.
+                        }
                     } else {
                         JOptionPane.showMessageDialog(this, "Preencha o campo Cidade!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
                         txtCidade.requestFocus();
-                    }//FIM IF "Cidade". 
+                    }
                 } else {
                     JOptionPane.showMessageDialog(this, "Preencha o campo Rua!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
                     txtrua.requestFocus();
-                }//FIM IF "bairro". 
+                }
             } else {
-
                 JOptionPane.showMessageDialog(this, "Preencha o campo Bairro!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
                 txtbairro.requestFocus();
-            }//FIM IF "rua"
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Cliente com o mesmo CPF já cadastrado!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
             txtcpf.requestFocus();
-        }//FIM IF "VERIFICAÇÃO DE CPF"
-    }//FIM.
+        }
+    }
+
+// Método para atualizar todas as tabelas (para evitar repetição de código)
+    private void atualizarTabelas() {
+        tabela_cliente("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
+                + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.nis,c.status_Cliente, c.registration_date,\n"
+                + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
+                + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
+        tabela_cliente_dependente("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
+                + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
+                + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
+                + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
+
+        tabela_cliente_socio_economico("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
+                + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
+                + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
+                + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
+
+        tabela_cliente_socio_economico_Saude("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
+                + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
+                + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
+                + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
+
+        tabela_dependente();
+    }
 
     //METODO UPDATE CLIENTES
     public void updateClientes() {
@@ -683,91 +751,120 @@ public final class CardClientes extends javax.swing.JPanel {
         cidade = txtCidade.getText();
 
         cliIdade = Integer.parseInt(txtidade.getText());
+        if (controllerTitular.controlVerificarCPFCadastrado(txtcpf.getText(), id) == false) {//PRIMEIRO IF DE VERIFICAÇÃO DE CPF CADASTRADO
+            if (!nomeCompleto.isEmpty()) {//PRIMEIRO IF "nomeCompleto"
+                if (!cpf.isEmpty()) {//SEGUNDO IF "cpf"
+                    if (!telefone.isEmpty()) {//TERCEIRO IF "telefone"
+                        if (!rua.isEmpty()) {//QUARTO IF "rua"
+                            if (!bairro.isEmpty()) {//QUINTO IF "bairro"
+                                if (!cidade.isEmpty()) {//SEXTO IF "cidade"
+                                    titular.setId(this.id);
+                                    titular.setNome_Completo(nomeCompleto);
+                                    titular.setNome_Social(txtnomeSocial.getText());
+                                    titular.setNome_Mae(txtnomeMae.getText());
+                                    titular.setCor_cliente((String) this.comboCor.getSelectedItem());
+                                    titular.setTelefone(telefone);
+                                    titular.setData_Nascimento(txtDTNascimento.getText());
+                                    titular.setGenero_cliente((String) this.comboSexo.getSelectedItem());
+                                    titular.setEstado_Civil((String) this.comboEst_Civil.getSelectedItem());
+                                    titular.setRg(txtRg.getText());
+                                    titular.setCpf(cpf);
+                                    titular.setNis(txtNis.getText());
+                                    titular.setStatus_Cliente((String) this.comboStatus.getSelectedItem());
+                                    titular.setIdade_cliente(cliIdade);
 
-        if (!nomeCompleto.isEmpty()) {//PRIMEIRO IF "nomeCompleto"
-            if (!cpf.isEmpty()) {//SEGUNDO IF "cpf"
-                if (!telefone.isEmpty()) {//TERCEIRO IF "telefone"
-                    if (!rua.isEmpty()) {//QUARTO IF "rua"
-                        if (!bairro.isEmpty()) {//QUINTO IF "bairro"
-                            if (!cidade.isEmpty()) {//SEXTO IF "cidade"
-                                titular.setId(this.id);
-                                titular.setNome_Completo(nomeCompleto);
-                                titular.setNome_Social(txtnomeSocial.getText());
-                                titular.setNome_Mae(txtnomeMae.getText());
-                                titular.setCor_cliente((String) this.comboCor.getSelectedItem());
-                                titular.setTelefone(telefone);
-                                titular.setData_Nascimento(txtDTNascimento.getText());
-                                titular.setGenero_cliente((String) this.comboSexo.getSelectedItem());
-                                titular.setEstado_Civil((String) this.comboEst_Civil.getSelectedItem());
-                                titular.setRg(txtRg.getText());
-                                titular.setCpf(cpf);
-                                titular.setNis(txtNis.getText());
-                                titular.setStatus_Cliente((String) this.comboStatus.getSelectedItem());
-                                titular.setIdade_cliente(cliIdade);
+                                    endereco.setCep(txtcep.getText());
+                                    endereco.setBairro(bairro);
+                                    endereco.setRua(rua);
+                                    endereco.setNumero(txtnumerocasa.getText());
+                                    endereco.setReferencia(txtreferencia.getText());
+                                    endereco.setNacionalidade((String) this.combonacionalidade.getSelectedItem());
+                                    endereco.setNaturalidade(txtnaturalidade.getText());
+                                    endereco.setCidade(cidade);
+                                    endereco.setTempoDeMoradia_cliente(txttempomoradia.getText());
 
-                                endereco.setCep(txtcep.getText());
-                                endereco.setBairro(bairro);
-                                endereco.setRua(rua);
-                                endereco.setNumero(txtnumerocasa.getText());
-                                endereco.setReferencia(txtreferencia.getText());
-                                endereco.setNacionalidade((String) this.combonacionalidade.getSelectedItem());
-                                endereco.setNaturalidade(txtnaturalidade.getText());
-                                endereco.setCidade(cidade);
-                                endereco.setTempoDeMoradia_cliente(txttempomoradia.getText());
-
-                                boolean resultado = controllerTitular.controlUpdateClientes(titular, endereco);
-                                if (resultado == true) {//CONDIÇÃO PARA MANDAR O RESULTADO PARA O BACK-END, PARA SALVAR
-                                    JOptionPane.showMessageDialog(this, "Alterado com sucesso!");
-                                    tabela_cliente("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
-                                            + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.nis,c.status_Cliente, c.registration_date, \n"
-                                            + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
-                                            + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
-                                    tabela_cliente_dependente("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
-                                            + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
-                                            + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
-                                            + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
-                                    tabela_cliente_socio_economico("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
-                                            + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
-                                            + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
-                                            + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
-                                    tabela_cliente_socio_economico_Saude("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
-                                            + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
-                                            + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
-                                            + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
-                                    limparCampos();
-                                    desabilitarCampos();
-                                    desabilitarBotao();
+                                    boolean resultado = controllerTitular.controlUpdateClientes(titular, endereco);
+                                    if (resultado == true) {//CONDIÇÃO PARA MANDAR O RESULTADO PARA O BACK-END, PARA SALVAR
+                                        JOptionPane.showMessageDialog(this, "Alterado com sucesso!");
+                                        tabela_cliente("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
+                                                + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.nis,c.status_Cliente, c.registration_date, \n"
+                                                + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
+                                                + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
+                                        tabela_cliente_dependente("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
+                                                + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
+                                                + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
+                                                + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
+                                        tabela_cliente_socio_economico("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
+                                                + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
+                                                + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
+                                                + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
+                                        tabela_cliente_socio_economico_Saude("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
+                                                + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
+                                                + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
+                                                + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
+                                        limparCampos();
+                                        desabilitarCampos();
+                                        desabilitarBotao();
+                                    } else {
+                                        JOptionPane.showMessageDialog(this, "Erro ao Salvar!");
+                                        limparCampos();
+                                        desabilitarCampos();
+                                        desabilitarBotao();
+                                    }//FIM DA CONDIÇÃO PARA SALVAR.
                                 } else {
-                                    JOptionPane.showMessageDialog(this, "Erro ao Salvar!");
-                                    limparCampos();
-                                    desabilitarCampos();
-                                    desabilitarBotao();
-                                }//FIM DA CONDIÇÃO PARA SALVAR.
+                                    JOptionPane.showMessageDialog(this, "Preencha o campo Cidade!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
+                                    txtCidade.requestFocus();
+                                }//FIM IF "Cidade".         
                             } else {
-                                JOptionPane.showMessageDialog(this, "Preencha o campo Cidade!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
-                                txtCidade.requestFocus();
-                            }//FIM IF "Cidade".         
+                                JOptionPane.showMessageDialog(this, "Preencha o campo Bairro!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
+                                txtbairro.requestFocus();
+                            }//FIM IF "bairro". 
                         } else {
-                            JOptionPane.showMessageDialog(this, "Preencha o campo Bairro!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
-                            txtbairro.requestFocus();
-                        }//FIM IF "bairro". 
+                            JOptionPane.showMessageDialog(this, "Preencha o campo Rua!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
+                            txtrua.requestFocus();
+                        }//FIM IF "rua"
                     } else {
-                        JOptionPane.showMessageDialog(this, "Preencha o campo Rua!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
-                        txtrua.requestFocus();
-                    }//FIM IF "rua"
+                        JOptionPane.showMessageDialog(this, "Preencha o campo Telefone!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
+                        txtFone.requestFocus();
+                    }//FIM IF "Fone"
                 } else {
-                    JOptionPane.showMessageDialog(this, "Preencha o campo Telefone!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
-                    txtFone.requestFocus();
-                }//FIM IF "Fone"
+                    JOptionPane.showMessageDialog(this, "Preencha o campo CPF!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
+                    txtcpf.requestFocus();
+                }//FIM IF "cpf"
             } else {
-                JOptionPane.showMessageDialog(this, "Preencha o campo CPF!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
-                txtcpf.requestFocus();
-            }//FIM IF "cpf"
+                JOptionPane.showMessageDialog(this, "Preencha o campo Nome!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
+                txtnomeCompleto.requestFocus();
+            }//FIM IF "nomeCompleto"
         } else {
-            JOptionPane.showMessageDialog(this, "Preencha o campo Nome!", "ATENÇÃO", JOptionPane.WARNING_MESSAGE);
-            txtnomeCompleto.requestFocus();
-        }//FIM IF "nomeCompleto"
-    }//FIM.
+            JOptionPane.showMessageDialog(null, "Cliente com o mesmo CPF já cadastrado!", "Mensagem", JOptionPane.PLAIN_MESSAGE);
+            txtcpf.requestFocus();
+        }//FIM IF "VERIFICAÇÃO DE CPF"
+//FIM.
+    }
+
+    public void excluirTitulares() {
+        desabilitarCampos();
+        int linha = table_cliente.getSelectedRow();
+        String tNome = (String) table_cliente.getValueAt(linha, 1);
+        int codigo = (int) table_cliente.getValueAt(linha, 0);
+        int opcao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir esse TITULAR ? \n"
+                + tNome + "?", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (opcao == JOptionPane.OK_OPTION) {
+            boolean resultado = controllerTitular.controlDeleteFuncionarios(codigo);
+            if (resultado == true) {
+                JOptionPane.showMessageDialog(this, "TITULAR removido com sucesso!");
+                tabela_cliente("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
+                        + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.nis,c.status_Cliente, c.registration_date,\n"
+                        + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
+                        + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id order by nome_Completo");
+                limparCampos();
+                desabilitarCampos();
+                desabilitarBotao();
+                btnNovo.setEnabled(true);
+                atualizarTabelas();
+            }
+        }
+    }
 
     //METODO SALVAR DEPENDENTES
     public void saveDependentes() {
@@ -777,7 +874,7 @@ public final class CardClientes extends javax.swing.JPanel {
 
         cliIdadedep = Integer.parseInt(txtIdateDependente.getText());
 
-        if (cliIdadedep <= 50) {
+        if (cliIdadedep >= 5 && cliIdadedep <= 17) {
             if (!nomeDependente.isEmpty()) {
                 dependentes.setId_titular(id);
                 dependentes.setNome_Completo(nomeDependente);
@@ -792,7 +889,7 @@ public final class CardClientes extends javax.swing.JPanel {
                     clientesDao.inserirClientesCadastrados();
                     JOptionPane.showMessageDialog(this, "Salvo com sucesso!");
                     limparCamposDependentes();
-                    tabela_dependente();
+                    tabela_dependente(listDependentes);
                 } else {
                     JOptionPane.showMessageDialog(this, "Erro ao Salvar!");
                 }//FIM DA CONDIÇÃO PARA SALVAR.
@@ -818,7 +915,28 @@ public final class CardClientes extends javax.swing.JPanel {
         controllerDependetes.controlUpdateDependente(dependentes);
         limparCamposDependentes();
         DesabilitarCamposDependentes();
-        tabela_dependente();
+        tabela_dependente(listDependentes);
+    }
+
+    public void excluirDependente() {
+        desabilitarCampos();
+        int linha = spTableDependente.getSelectedRow();
+        String tNome = (String) spTableDependente.getValueAt(linha, 1);
+        int codigo = (int) spTableDependente.getValueAt(linha, 0);
+        int opcao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir esse DEPENDENTE ? \n"
+                + tNome + "?", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (opcao == JOptionPane.OK_OPTION) {
+            boolean resultado = controllerDependetes.controlDeleteDependentes(codigo);
+            if (resultado == true) {
+                JOptionPane.showMessageDialog(this, "DEPENDENTE removido com sucesso!");
+
+                limparCampos();
+                desabilitarCampos();
+                desabilitarBotao();
+                btnNovo.setEnabled(true);
+                atualizarTabelas();
+            }
+        }
     }
 
     //METODO SALVAR SOCIO_ECONOMICO
@@ -871,35 +989,44 @@ public final class CardClientes extends javax.swing.JPanel {
     }//FIM.
 
     public void BuscarTitularPreenchendoTable() {
-        titular.setPesquisar(txtNomeClientePesquisar.getText());
+        titular.setPesquisar(txtNomeClientePesquisar.getText().trim());
+
+        // Busca um titular específico e preenche os campos da tela
         titular = titularDao.buscarTitular(titular, endereco);
-        id = Integer.parseInt((String.valueOf(titular.getId())));
-        txtnomeCompleto.setText((String.valueOf(titular.getNome_Completo())));
-        txtnomeSocial.setText((String.valueOf(titular.getNome_Social())));
-        comboCor.setSelectedItem((String.valueOf(titular.getCor_cliente())));
-        txtnomeMae.setText((String.valueOf(titular.getNome_Mae())));
-        txtFone.setText((String.valueOf(titular.getTelefone())));
-        txtDTNascimento.setText((String.valueOf(titular.getData_Nascimento())));
-        txtidade.setText((String.valueOf(titular.getIdade_cliente())));
-        comboSexo.setSelectedItem((String.valueOf(titular.getGenero_cliente())));
-        comboEst_Civil.setSelectedItem((String.valueOf(titular.getEstado_Civil())));
-        txtRg.setText((String.valueOf(titular.getRg())));
-        txtcpf.setText((String.valueOf(titular.getCpf())));
-        txtNis.setText((String.valueOf(titular.getCpf())));
-        comboStatus.setSelectedItem((String.valueOf(titular.getStatus_Cliente())));
-        txtcep.setText((String.valueOf(endereco.getCep())));
-        txtbairro.setText((String.valueOf(endereco.getBairro())));
-        txtrua.setText((String.valueOf(endereco.getRua())));
-        txtnumerocasa.setText((String.valueOf(endereco.getNumero())));
-        txtreferencia.setText((String.valueOf(endereco.getReferencia())));
-        combonacionalidade.setSelectedItem((String.valueOf(endereco.getNacionalidade())));
-        txtnaturalidade.setText((String.valueOf(endereco.getNaturalidade())));
-        txtCidade.setText((String.valueOf(endereco.getCidade())));
-        txttempomoradia.setText((String.valueOf(endereco.getTempoDeMoradia_cliente())));
-        tabela_cliente("select c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, \n"
-                + "		c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.status_Cliente, \n"
-                + "		e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente\n"
-                + "	from tb_titular c inner join tb_endereco e on c.id_endereco = e.id where nome_Completo like '%" + titular.getPesquisar() + "%' or c.cpf like '%" + titular.getPesquisar() + "'");
+        id = titular.getId();
+        txtnomeCompleto.setText(titular.getNome_Completo());
+        txtnomeSocial.setText(titular.getNome_Social());
+        comboCor.setSelectedItem(titular.getCor_cliente());
+        txtnomeMae.setText(titular.getNome_Mae());
+        txtFone.setText(titular.getTelefone());
+        txtDTNascimento.setText(titular.getData_Nascimento());
+        txtidade.setText(String.valueOf(titular.getIdade_cliente()));
+        comboSexo.setSelectedItem(titular.getGenero_cliente());
+        comboEst_Civil.setSelectedItem(titular.getEstado_Civil());
+        txtRg.setText(titular.getRg());
+        txtcpf.setText(titular.getCpf());
+        txtNis.setText(titular.getNis());
+        comboStatus.setSelectedItem(titular.getStatus_Cliente());
+        txtcep.setText(endereco.getCep());
+        txtbairro.setText(endereco.getBairro());
+        txtrua.setText(endereco.getRua());
+        txtnumerocasa.setText(endereco.getNumero());
+        txtreferencia.setText(endereco.getReferencia());
+        combonacionalidade.setSelectedItem(endereco.getNacionalidade());
+        txtnaturalidade.setText(endereco.getNaturalidade());
+        txtCidade.setText(endereco.getCidade());
+        txttempomoradia.setText(endereco.getTempoDeMoradia_cliente());
+
+        // Preenche a tabela somente com o titular pesquisado
+        String sql = "SELECT c.id, c.nome_Completo, c.nome_Social, c.cor_cliente, c.nome_Mae, c.telefone, "
+                + "c.data_Nascimento, c.idade_cliente, c.genero_cliente, c.estado_Civil, c.rg, c.cpf, c.nis, c.status_Cliente, c.registration_date, "
+                + "e.id, e.cep, e.bairro, e.rua, e.numero, e.referencia, e.nacionalidade, e.naturalidade, e.cidade, e.tempoDeMoradia_cliente "
+                + "FROM tb_titular c "
+                + "INNER JOIN tb_endereco e ON c.id_endereco = e.id "
+                + "WHERE c.nome_Completo LIKE '%" + titular.getPesquisar() + "%' "
+                + "   OR c.cpf LIKE '%" + titular.getPesquisar() + "%'";
+
+        tabela_cliente(sql);
     }
 
     public void BuscarTitularDependentePreenchendoTable() {
@@ -934,6 +1061,48 @@ public final class CardClientes extends javax.swing.JPanel {
         txtNomeClienteTitularSocioEconomicoSaude.setText((String.valueOf(titular.getNome_Completo())));
 
         tabela_cliente_socio_economico_Saude("select id_clientes, nome_cliente, cpf_cliente, rg_cliente, idade_cliente, genero from tb_clientes where nome_cliente like '%" + titular.getPesquisar() + "%'");
+    }
+
+    public void BuscarDependentePreenchendoTela() {
+        // Define o filtro de pesquisa com base no campo de texto
+        dependentes.setPesquisar(txt_pesquisar_dependente.getText().trim());
+
+        // Chama o DAO para buscar os dados do dependente (retorna lista)
+        List<Dependentes> lista = dependenteDao.buscarDependentesPorDependente(dependentes);
+
+        // Verifica se encontrou resultados
+        if (!lista.isEmpty()) {
+            // Pega o primeiro da lista (ou adapte para percorrer todos)
+            Dependentes d = lista.get(0);
+
+            // Preenche os campos da tela com os dados do dependente
+            id = d.getId();
+            txtnomeCompletoDependente.setText(d.getNome_Completo());
+            txtRgDependente.setText(d.getRg());
+            txtIdateDependente.setText(String.valueOf(d.getIdade_cliente()));
+            txtDTNascimento.setText(d.getData_Nascimento()); // certifique-se que tem este campo
+            comboSexoDependente.setSelectedItem(d.getGenero_cliente());
+            comboParentesco.setSelectedItem(d.getDependencia_cliente()); // ajustado para correto
+
+            // Agora preenche a tabela usando a mesma consulta
+            String sql = "SELECT d.id AS id_dependente, d.nome_dependente, d.rg AS rg_dependente, d.cpf AS cpf_dependente, "
+                    + "d.idade AS idade_dependente, d.genero AS genero_dependente, d.dependencia_cliente, "
+                    + "d.registration_date AS data_cadastro_dependente, d.registration_date_update AS data_atualizacao_dependente, "
+                    + "t.id AS id_titular, t.nome_Completo AS nome_titular, t.cpf AS cpf_titular "
+                    + "FROM tb_dependente d "
+                    + "INNER JOIN tb_titular t ON d.id_titular = t.id "
+                    + "WHERE t.nome_Completo LIKE '%" + dependentes.getPesquisar() + "%' "
+                    + "   OR t.cpf LIKE '%" + dependentes.getPesquisar() + "%'";
+
+            // Método que popula a JTable (você já deve ter um)
+            tabela_dependente(lista);
+            btnAlterarDependente.setEnabled(true);
+            btnCancelarDep.setEnabled(true);
+            btnRemoverDependente.setEnabled(true);
+            btnNovoDependente.setEnabled(false);
+        } else {
+            JOptionPane.showMessageDialog(null, "Nenhum dependente encontrado.");
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -995,6 +1164,7 @@ public final class CardClientes extends javax.swing.JPanel {
         jLabel55 = new javax.swing.JLabel();
         txtRg = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        btnExcluir = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtPesquisarNomeTitular = new javax.swing.JTextField();
@@ -1022,6 +1192,9 @@ public final class CardClientes extends javax.swing.JPanel {
         btnSalvarDependente = new javax.swing.JButton();
         btnNovoDependente = new javax.swing.JButton();
         btnCancelarDep = new javax.swing.JButton();
+        btnRemoverDependente = new javax.swing.JButton();
+        txt_pesquisar_dependente = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel24 = new javax.swing.JLabel();
         comboEscolariedade = new javax.swing.JComboBox<>();
@@ -1310,6 +1483,13 @@ public final class CardClientes extends javax.swing.JPanel {
             }
         });
 
+        btnExcluir.setText("EXCLUIR");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -1330,72 +1510,88 @@ public final class CardClientes extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtnomeCompleto, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                                    .addComponent(txtFone)
-                                    .addComponent(txtcep))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txtnomeSocial, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jLabel38, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(17, 17, 17)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtnomeCompleto, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                                            .addComponent(txtFone)
+                                            .addComponent(txtcep))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(combonacionalidade, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(txtnomeSocial, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(0, 0, Short.MAX_VALUE))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                    .addComponent(jLabel38, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGap(17, 17, 17)
                                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(txtbairro, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(comboStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(comboEst_Civil, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(txtidade))
-                                                .addGap(64, 64, 64))))))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txtreferencia, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
-                                .addGap(157, 157, 157)))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                    .addComponent(combonacionalidade, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                            .addComponent(txtbairro, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addComponent(comboStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addComponent(comboEst_Civil, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addComponent(txtidade))
+                                                        .addGap(64, 64, 64))))))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(txtreferencia, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                                        .addGap(157, 157, 157)))
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGap(4, 4, 4)
+                                                .addComponent(jLabel2))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGap(5, 5, 5)
+                                                .addComponent(lbnis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(txtnomeMae, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(0, 0, Short.MAX_VALUE))
+                                            .addComponent(txtNis)))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(10, 10, 10)))
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtnaturalidade, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                                            .addComponent(txtrua, javax.swing.GroupLayout.Alignment.TRAILING))
+                                        .addGap(0, 0, Short.MAX_VALUE))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGap(4, 4, 4)
-                                        .addComponent(jLabel2))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(5, 5, 5)
-                                        .addComponent(lbnis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(txtnomeMae, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addComponent(txtNis)))
+                                        .addComponent(jLabel55, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtRg, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(10, 10, 10)))
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtnaturalidade, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                                    .addComponent(txtrua, javax.swing.GroupLayout.Alignment.TRAILING))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(4, 4, 4)
-                                .addComponent(jLabel55, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnCancelar)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtRg, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(btnExcluir)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnAlterar, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(7, 7, 7)
+                                .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnNovo, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton1)
+                                .addGap(18, 18, 18)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -1431,25 +1627,10 @@ public final class CardClientes extends javax.swing.JPanel {
                         .addGap(116, 116, 116)
                         .addComponent(spTableCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 862, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(292, 292, 292)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txtNomeClientePesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(btnCancelar)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(btnAlterar, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(197, 197, 197)
-                                        .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnNovo, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton1)))))
+                        .addGap(274, 274, 274)
+                        .addComponent(txtNomeClientePesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -1527,7 +1708,8 @@ public final class CardClientes extends javax.swing.JPanel {
                     .addComponent(btnSalvar)
                     .addComponent(btnAlterar)
                     .addComponent(btnCancelar)
-                    .addComponent(jButton1))
+                    .addComponent(jButton1)
+                    .addComponent(btnExcluir))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNomeClientePesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1692,6 +1874,20 @@ public final class CardClientes extends javax.swing.JPanel {
             }
         });
 
+        btnRemoverDependente.setText("EXCLUIR");
+        btnRemoverDependente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoverDependenteActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("PESQUISAR");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -1714,30 +1910,11 @@ public final class CardClientes extends javax.swing.JPanel {
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(spTableDependentes, javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel44, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel44, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                    .addComponent(btnCancelarDep)
-                                    .addGap(16, 16, 16)))
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addComponent(txtnomeCompletoDependente, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtRgDependente, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtcpfDependente, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jLabel43)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtIdateDependente, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addComponent(comboSexoDependente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1745,11 +1922,36 @@ public final class CardClientes extends javax.swing.JPanel {
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addComponent(comboParentesco, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addComponent(btnAlterarDependente)
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                            .addComponent(txtnomeCompletoDependente, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(txtRgDependente, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(txtcpfDependente, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                            .addGap(406, 406, 406)
+                                            .addComponent(txt_pesquisar_dependente, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLabel43)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(btnSalvarDependente)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(btnNovoDependente))))))
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtIdateDependente, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButton2)))))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                            .addComponent(btnCancelarDep)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnRemoverDependente)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnAlterarDependente)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(btnSalvarDependente)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(btnNovoDependente))))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -1762,7 +1964,7 @@ public final class CardClientes extends javax.swing.JPanel {
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(spTableCliente_dependente, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1799,10 +2001,13 @@ public final class CardClientes extends javax.swing.JPanel {
                     .addComponent(btnAlterarDependente)
                     .addComponent(btnSalvarDependente)
                     .addComponent(btnNovoDependente)
-                    .addComponent(btnCancelarDep))
+                    .addComponent(btnCancelarDep)
+                    .addComponent(btnRemoverDependente)
+                    .addComponent(txt_pesquisar_dependente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2))
                 .addGap(18, 18, 18)
                 .addComponent(spTableDependentes, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(96, Short.MAX_VALUE))
+                .addContainerGap(95, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Dependentes", jPanel2);
@@ -2331,6 +2536,7 @@ public final class CardClientes extends javax.swing.JPanel {
         btnNovo.setEnabled(false);
         btnAlterar.setEnabled(true);
         btnCancelar.setEnabled(true);
+        btnExcluir.setEnabled(true);
         String nome = "" + table_cliente.getValueAt(table_cliente.getSelectedRow(), 1);
         con.getConectar();
 
@@ -2381,6 +2587,7 @@ public final class CardClientes extends javax.swing.JPanel {
         btnNovo.setEnabled(false);
         btnAlterar.setEnabled(true);
         btnCancelar.setEnabled(true);
+        btnExcluir.setEnabled(true);
     }//GEN-LAST:event_btnBuscarClienteActionPerformed
 
     private void txtPesquisarNomeTitularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPesquisarNomeTitularActionPerformed
@@ -2417,6 +2624,7 @@ public final class CardClientes extends javax.swing.JPanel {
         btnAlterarDependente.setEnabled(true);
         btnSalvarDependente.setEnabled(false);
         btnCancelarDep.setEnabled(true);
+        btnRemoverDependente.setEnabled(true);
         String nome = "" + spTableDependente.getValueAt(spTableDependente.getSelectedRow(), 1);
         con.getConectar();
         con.executarSql("select d.id_titular, t.nome_Completo, d.id, d.nome_dependente,d.rg, d.cpf, d.Idade, d.genero, d.dependencia_cliente from tb_titular t inner join tb_dependentes d on d.id_titular = t.id where nome_dependente ='" + nome + "'");
@@ -2560,6 +2768,7 @@ public final class CardClientes extends javax.swing.JPanel {
             validarCamposTitular();
             saveClientes();
         } else {
+            validarCamposTitular();
             updateClientes();
         };
     }//GEN-LAST:event_btnSalvarActionPerformed
@@ -2614,6 +2823,7 @@ public final class CardClientes extends javax.swing.JPanel {
         btnNovoDependente.setEnabled(true);
         desabilitarBotaoDependente();
         DesabilitarCamposDependentes();
+        atualizarTabelas();
     }//GEN-LAST:event_btnCancelarDepActionPerformed
 
     private void txtNisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNisActionPerformed
@@ -2624,6 +2834,18 @@ public final class CardClientes extends javax.swing.JPanel {
         Risco risco = new Risco();
         risco.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        excluirTitulares();
+    }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void btnRemoverDependenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoverDependenteActionPerformed
+        excluirDependente();
+    }//GEN-LAST:event_btnRemoverDependenteActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        BuscarDependentePreenchendoTela();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     @Override
     protected void paintChildren(Graphics grphcs) {
@@ -2644,8 +2866,10 @@ public final class CardClientes extends javax.swing.JPanel {
     private javax.swing.JButton btnBuscarClienteSocioEconomicoSaude;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnCancelarDep;
+    private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnNovo;
     private javax.swing.JButton btnNovoDependente;
+    private javax.swing.JButton btnRemoverDependente;
     private javax.swing.JButton btnSalvar;
     private button.Button btnSalvarClienteSocioEconomico;
     private javax.swing.JButton btnSalvarDependente;
@@ -2673,6 +2897,7 @@ public final class CardClientes extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> comboStatus;
     private javax.swing.JComboBox<String> combonacionalidade;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2760,6 +2985,7 @@ public final class CardClientes extends javax.swing.JPanel {
     private javax.swing.JTextField txtProfissaoResponsavel;
     private javax.swing.JTextField txtRg;
     private javax.swing.JFormattedTextField txtRgDependente;
+    private javax.swing.JTextField txt_pesquisar_dependente;
     private javax.swing.JTextField txtbairro;
     private javax.swing.JFormattedTextField txtcep;
     private javax.swing.JFormattedTextField txtcpf;

@@ -18,17 +18,22 @@ public class ControllerTitular {
     public boolean controlUpdateClientes(Titular titular, Endereco endereco) {
         return this.titularDao.daoUpdateTitular(titular, endereco);
     }
+    //delete funcionarios
+
+    public boolean controlDeleteFuncionarios(int codigo) {
+        return this.titularDao.daoDeleteTitular(codigo);
+    }
 
     //Verificação de CPF cadastrado 
-    public boolean controlVerificarCPFCadastrado(String cpf) {
-        return this.titularDao.verificarClienteExistenteCPF(cpf);
+    public boolean controlVerificarCPFCadastrado(String cpf, int idTitular) {
+        return this.titularDao.verificarClienteExistenteCPF(cpf, idTitular);
     }
-    
+
     //Verificação de RG cadastrado
     public boolean controlVerificarRGCadastrado(String rg) {
         return this.titularDao.verificarClienteExistenteRG(rg);
     }
-    
+
     //METODO PARA PESQUISAR TITULAR POR NOME OU CPF
 //    public Titular controlPesquisarTitular(String pesquisa){
 //        return this.titularDao.buscarTitular(pesquisa);

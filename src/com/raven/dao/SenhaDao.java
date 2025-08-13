@@ -137,7 +137,7 @@ public class SenhaDao extends ConexaoBD {
             texto.append(senha).append("\n");
             texto.append("NOME: ").append(nomeCliente).append("\n");
             texto.append(dateFormat.format(dataAtual)).append("\n");
-            texto.append("PRATO CHEIO TEFÉ").append("\n");
+            texto.append("PRATO CHEIO BAIRRO DA UNIÃO").append("\n");
 //            texto.append(separador);
         } else {
             texto.append("NÃO ENCONTRADO\n\n");
@@ -163,11 +163,11 @@ public class SenhaDao extends ConexaoBD {
                 senha = new Senha();
                 senha.setId(this.getResultSet().getInt(1));
                 senha.setCliente(this.getResultSet().getString(2));
-                senha.setIdade(this.getResultSet().getString(3));
-                senha.setGenero(this.getResultSet().getString(4));
-                senha.setDeficiencia(this.getResultSet().getString(5));
-                senha.setTipoSenha(this.getResultSet().getString(6));
-                senha.setData_refeicao(this.getResultSet().getString(7));
+                senha.setIdade(this.getResultSet().getString(4));
+                senha.setGenero(this.getResultSet().getString(5));
+                senha.setDeficiencia(this.getResultSet().getString(6));
+                senha.setTipoSenha(this.getResultSet().getString(7));
+                senha.setData_refeicao(this.getResultSet().getString(9));
                 listSenha.add(senha);
             }
         } catch (SQLException e) {

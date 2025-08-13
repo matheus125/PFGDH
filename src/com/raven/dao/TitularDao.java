@@ -23,7 +23,7 @@ public class TitularDao extends ConexaoBD {
                 + "'" + titular.getEstado_Civil() + "',"
                 + "'" + titular.getRg() + "',"
                 + "'" + titular.getCpf() + "',"
-                + "'" + titular.getNis()+ "',"
+                + "'" + titular.getNis() + "',"
                 + "'" + titular.getStatus_Cliente() + "',"
                 + "'" + endereco.getCep() + "',"
                 + "'" + endereco.getBairro() + "',"
@@ -87,23 +87,45 @@ public class TitularDao extends ConexaoBD {
     }
     //FIM.
 
-    //METODO PARA VERIFICAR SE CPF JÁ EXISTE CADASTRO    
-    public boolean verificarClienteExistenteCPF(String cpf) {
+    // MÉTODO DELETE_TITULARES
+    public boolean daoDeleteTitular(int codigo) {
+        String comandoDelete = "CALL sp_deletar_titular(" + codigo + ");";
+        try {
+            this.getConectar();
+            this.executarSql(comandoDelete);
+            return true;
+        } catch (Exception erro) {
+            System.out.println("Erro: " + erro.getMessage());
+            return false;
+        } finally {
+            this.getfecharConexao();
+        }
+    } // FIM.
 
-        int contador = 0;
+    //METODO PARA VERIFICAR SE CPF JÁ EXISTE CADASTRO    
+    // Verifica se existe CPF cadastrado, ignorando o próprio titular durante alterações
+    public boolean verificarClienteExistenteCPF(String cpf, int idTitular) {
+        boolean existe = false;
         this.getConectar();
         try {
-            this.executarSql("select * from tb_titular where cpf='" + cpf + "'");
-            while (this.getResultSet().next()) {
-                contador = 1;
+            String sql = "SELECT COUNT(*) AS total FROM tb_titular "
+                    + "WHERE cpf = '" + cpf + "' AND id <> " + idTitular;
+            this.executarSql(sql);
+
+            if (this.getResultSet().next()) {
+                existe = this.getResultSet().getInt("total") > 0;
             }
-            return contador == 1;
+
+            return existe;
         } catch (SQLException e) {
+            e.printStackTrace();
             return false;
+        } finally {
+            this.getfecharConexao();
         }
     }
-    //FIM.
 
+    //FIM.
     //METODO PARA VERIFICAR SE RG JÁ EXISTE CADASTRO
     public boolean verificarClienteExistenteRG(String rg) {
 
