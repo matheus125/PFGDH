@@ -5,6 +5,10 @@
  */
 package view.com.login;
 
+import com.api.backup.BackupManager;
+import com.api.backup.BackupMySQL;
+import com.api.backup.EnviarBackupAPI;
+import com.api.backup.VerificadorConexao;
 import com.mensagem.Campo_Senha;
 import com.mensagem.Campo_login;
 import com.mensagem.Message;
@@ -38,6 +42,7 @@ public class TelaLogin extends javax.swing.JFrame {
     public TelaLogin() {
 
         initComponents();
+
         GlassPanePopup.install(this);
         con.getConectar();
         senha = txtsenha.getEchoChar();
@@ -133,6 +138,27 @@ public class TelaLogin extends javax.swing.JFrame {
         });
         GlassPanePopup.showPopup(obj);
     }//FIM.
+
+    private void Verificar_Conexao() {
+        while (true) {
+            if (VerificadorConexao.temConexao()) {
+                System.out.println("Internet OK! Iniciando backup...");
+                String caminhoBackup = BackupMySQL.gerarBackup();
+                if (caminhoBackup != null) {
+                    EnviarBackupAPI.enviar(caminhoBackup);
+                }
+                break;
+            } else {
+                System.out.println("Sem conexão. Tentará novamente em 10 segundos...");
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -397,6 +423,8 @@ public class TelaLogin extends javax.swing.JFrame {
                 txtsenha.requestFocus();
             } else if (con.getResultSet().getString("password").equals(txtsenha.getText())) {
                 salvarUserLogs();
+                // Inicia verificação de conexão em segundo plano
+                new Thread(() -> BackupManager.iniciarBackupComVerificacao()).start();
                 Main telamenu = new Main();
                 telamenu.usuário = con.getResultSet().getString("login");
                 telamenu.setVisible(true);

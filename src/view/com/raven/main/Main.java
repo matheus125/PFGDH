@@ -1,15 +1,10 @@
 package view.com.raven.main;
 
-import view.com.raven.event.EventMenuSelected;
 import com.raven.banco.ConexaoBD;
-import com.raven.controller.ControllerFrequencia;
-import com.raven.controller.ControllerSenha;
-import com.raven.dao.FrequenciaDAO;
 import com.raven.swing.icon.GoogleMaterialDesignIcons;
 import com.raven.swing.icon.IconFontSwing;
 import view.com.raven.form.Form_Home;
 import java.awt.Color;
-import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JComponent;
@@ -21,9 +16,12 @@ import view.com.raven.form.Form_Clientes;
 import view.com.raven.form.Form_Vendas;
 import view.com.raven.form.Form_ExpeSenhas;
 import view.com.login.TelaLogin;
+import com.api.backup.BackupMySQL;
 import view.com.raven.component.CarSistema;
 import view.com.raven.component.CardBackupSistema;
 import view.com.raven.component.CardRelatorio;
+import com.api.backup.EnviarBackupAPI;
+import com.api.backup.VerificadorConexao;
 
 public class Main extends javax.swing.JFrame {
 
@@ -45,19 +43,7 @@ public class Main extends javax.swing.JFrame {
 
     public Main() {
         initComponents();
-
-        // Gera e envia o backup ao iniciar o sistema
-//        BackupMySQL.gerarBackup();
-//        String caminhoBackup = BackupMySQL.gerarBackup();
-//
-//        if (caminhoBackup != null) {
-//            File file = new File(caminhoBackup);
-//            System.out.println("Arquivo gerado: " + file.getAbsolutePath());
-//            System.out.println("Existe? " + file.exists());
-//            EnviarBackupAPI.enviar(file.getAbsolutePath());
-//        } else {
-//            System.out.println("Falha ao gerar o backup.");
-//        }
+    
         //  Init google icon font
         IconFontSwing.register(GoogleMaterialDesignIcons.getIconFont());
         lbusuarios.setVisible(false);
@@ -123,6 +109,7 @@ public class Main extends javax.swing.JFrame {
         setForm(new Form_Home());
     }
 
+    
     private void CheckLogin() {
         try {
             Form_Funcionarios funcionarios = new Form_Funcionarios();

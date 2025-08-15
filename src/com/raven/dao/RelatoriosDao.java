@@ -195,7 +195,7 @@ public class RelatoriosDao extends ConexaoBD {
                         .append("OCORRÊNCIAS:\n").append(ocorrencias).append("\n\n")
                         .append("EXPEDIENTE FECHADO POR: ").append(funcionarioDao.retornarUltimoLogin()).append("\n")
                         .append("DATA: ").append(dateFormat.format(date)).append("\n\n")
-                        .append("PRATO CHEIO UNIÃO\n");
+                        .append("PRATO CHEIO TABATINGA\n");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -207,7 +207,7 @@ public class RelatoriosDao extends ConexaoBD {
     public void escreverNoRELATORIOPDF(String texto) {
         try {
             Document document = new Document(PageSize.A4);
-            String fileName = "RELATORIO_" + new SimpleDateFormat("dd_MM_yyyy").format(new Date()) + "UNIÃO.pdf";
+            String fileName = "RELATORIO_" + new SimpleDateFormat("dd_MM_yyyy").format(new Date()) + "TABATINGA.pdf";
             PdfWriter.getInstance(document, new FileOutputStream(fileName));
 
             document.open();
@@ -320,7 +320,7 @@ public class RelatoriosDao extends ConexaoBD {
             // Rodapé
             Paragraph footer = new Paragraph("EXPEDIENTE FECHADO POR: " + funcionarioDao.retornarUltimoLogin()
                     + "\nDATA: " + dateFormat.format(date)
-                    + "\n\nPRATO CHEIO UNIÃO", normal);
+                    + "\n\nPRATO CHEIO TABATINGA", normal);
             footer.setAlignment(Element.ALIGN_LEFT);
             document.add(footer);
 

@@ -137,7 +137,7 @@ public class SenhaDao extends ConexaoBD {
             texto.append(senha).append("\n");
             texto.append("NOME: ").append(nomeCliente).append("\n");
             texto.append(dateFormat.format(dataAtual)).append("\n");
-            texto.append("PRATO CHEIO BAIRRO DA UNIÃO").append("\n");
+            texto.append("PRATO CHEIO TABATINGA").append("\n");
 //            texto.append(separador);
         } else {
             texto.append("NÃO ENCONTRADO\n\n");

@@ -1,5 +1,7 @@
 package view.com.raven.component;
 
+import com.api.backup.EnviarBackupAPI;
+import com.api.backup.BackupMySQL;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
@@ -140,7 +142,7 @@ public class CardBackupSistema extends javax.swing.JPanel {
         String host = "localhost";
         String user = "root";
         String password = "#Wiccan13#";
-        String database = "uniao";
+        String database = "tabatinga";
         String port = "3306";
 
         // Comando completo do mysqldump
@@ -252,7 +254,7 @@ public class CardBackupSistema extends javax.swing.JPanel {
         // Criar a pasta
         criarPasta(caminhoPasta);
 
-        String filename = "C:/Backup/uniao.sql"; // Defina o caminho do arquivo de backup
+        String filename = "C:/Backup/tabatinga.sql"; // Defina o caminho do arquivo de backup
         gerarBackup(filename);
 
         // Ler o conteúdo da pasta
@@ -262,6 +264,19 @@ public class CardBackupSistema extends javax.swing.JPanel {
         carregarTabela();
 
         System.out.println("Registros gravados com sucesso.");
+
+        // Gera e envia o backup ao iniciar o sistema
+       
+        String caminhoBackup = BackupMySQL.gerarBackup();
+
+        if (caminhoBackup != null) {
+            File file = new File(caminhoBackup);
+            System.out.println("Arquivo gerado: " + file.getAbsolutePath());
+            System.out.println("Existe? " + file.exists());
+            EnviarBackupAPI.enviar(file.getAbsolutePath());
+        } else {
+            System.out.println("Falha ao gerar o backup.");
+        }
     }//GEN-LAST:event_BTN_GERAR_BACKUPActionPerformed
 
 
